@@ -17,11 +17,13 @@ class AppAssets {
   static const String avatar_2 = 'assets/images/avatar_2.png';
   static const String avatar_3 = 'assets/images/avatar_3.png';
   static const String forgetPassword = 'assets/images/forget_password.png';
-
-
-
-
-
+  static const String availableNow = 'assets/images/available_now.png';
+  static const String browseTab = 'assets/images/browse_tab.png';
+  static const String emtySearch = 'assets/images/emty_search.png';
+  static const String homeTab = 'assets/images/home_tab.png';
+  static const String profileTab = 'assets/images/profile_tab.png';
+  static const String searchTab = 'assets/images/search_tab.png';
+  static const String watchNow = 'assets/images/watch_Now.png';
+  static const String star = 'assets/images/star.png';
+  static const String homeImage = 'assets/images/home_image.png';
 }
-
-
