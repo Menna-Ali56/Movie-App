@@ -7,7 +7,6 @@ import '../../../../utils/app_styles.dart';
 import '../../../widgets/custom_elevated_button.dart';
 import '../../../widgets/custom_text_field.dart';
 
-
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
 
@@ -39,7 +38,9 @@ class _LoginScreenState extends State<LoginScreen> {
             spacing: height * 0.02,
             children: [
               Image.asset(AppAssets.movieLogo),
-              SizedBox(height: height * 0.03,),
+              SizedBox(
+                height: height * 0.03,
+              ),
               CustomTextField(
                 borderColor: AppColors.transparentColor,
                 filled: true,
@@ -51,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: AppColors.white,
                 ),
               ),
-
               CustomTextField(
                 borderColor: AppColors.transparentColor,
                 filled: true,
@@ -62,13 +62,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icons.lock,
                   color: AppColors.white,
                 ),
-                suffixIcon: Icon(Icons.visibility_off_rounded
-                  , color: AppColors.white,),
+                suffixIcon: Icon(
+                  Icons.visibility_off_rounded,
+                  color: AppColors.white,
+                ),
               ),
-
               TextButton(
                 onPressed: () {
-                  //todo:Navigation to forget Password
+                  Navigator.of(context).pushNamed(AppRoutes.reset_password);
                 },
                 child: Align(
                   alignment: AlignmentDirectional.centerEnd,
@@ -78,7 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
               SizedBox(
                 width: double.infinity,
                 child: CustomElevatedButton(
@@ -102,8 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed(
-                          AppRoutes.register_screen);
+                      Navigator.of(context)
+                          .pushNamed(AppRoutes.register_screen);
                     },
                     child: Align(
                       alignment: AlignmentDirectional.center,
@@ -160,32 +160,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
               Container(
                 width: 130,
                 height: 62,
-
                 padding: const EdgeInsets.symmetric(
                   horizontal: 7,
                 ),
-
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: AppColors.yellow,
                     width: 3,
                   ),
-
                   borderRadius: BorderRadius.circular(35),
                 ),
-
                 child: Row(
-                  mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
-
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-
-                    // ================= ENGLISH =================
-
                     GestureDetector(
                       onTap: () {
                         setState(() {
@@ -196,21 +186,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // TODO: English onTap
                       },
-
                       child: Container(
                         width: 48,
                         height: 48,
-
                         decoration: BoxDecoration(
                           color: selectedLanguage == 0
                               ? AppColors.yellow
                               : AppColors.transparentColor,
-
                           shape: BoxShape.circle,
                         ),
-
                         alignment: Alignment.center,
-
                         child: const Text(
                           '🇺🇸',
                           style: TextStyle(
@@ -219,9 +204,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-
-                    // ================= ARABIC =================
-
                     GestureDetector(
                       onTap: () {
                         setState(() {
@@ -232,21 +214,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // TODO: Arabic onTap
                       },
-
                       child: Container(
                         width: 48,
                         height: 48,
-
                         decoration: BoxDecoration(
                           color: selectedLanguage == 1
                               ? AppColors.yellow
                               : AppColors.transparentColor,
-
                           shape: BoxShape.circle,
                         ),
-
                         alignment: Alignment.center,
-
                         child: const Text(
                           '🇪🇬',
                           style: TextStyle(
@@ -264,5 +241,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
 }
