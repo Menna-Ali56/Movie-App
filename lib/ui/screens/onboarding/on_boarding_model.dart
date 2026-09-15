@@ -39,7 +39,7 @@ const List<OnboardingData> onboardingPages = [
     overlayImage: AppAssets.overLayer2,
     title: "Explore All Genres",
     description:
-    "Discover movies from every genre, in all\navailable qualities. Find something new\nand exciting to watch every day.",
+    "Discover movies from every genre in all\n available qualities. Find something new\nand exciting to watch every day.",
   ),
 
   OnboardingData(
