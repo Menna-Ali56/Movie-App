@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/size_utils.dart';
@@ -13,8 +14,10 @@ class ResetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = context.width;
     var height = context.height;
+
+    final localizations = AppLocalizations.of(context)!;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.black,
@@ -24,7 +27,7 @@ class ResetPassword extends StatelessWidget {
           ),
           backgroundColor: AppColors.black,
           title: Text(
-            "Forget Password",
+            localizations.forget_password,
             style: AppStyles.regular14Yellow,
           ),
         ),
@@ -32,12 +35,14 @@ class ResetPassword extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           spacing: height * 0.02,
           children: [
-            Image.asset(AppAssets.forgetPassword),
+            Image.asset(
+              AppAssets.forgetPassword,
+            ),
             CustomTextField(
               borderColor: AppColors.transparentColor,
               filled: true,
               fillColor: AppColors.darkGray,
-              hintText: 'Email',
+              hintText: localizations.email,
               hintStyle: AppStyles.regular16White,
               prefixIcon: Icon(
                 Icons.email_rounded,
@@ -48,12 +53,14 @@ class ResetPassword extends StatelessWidget {
               width: double.infinity,
               child: CustomElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(AppRoutes.login_screen);
+                  Navigator.of(context).pushNamed(
+                    AppRoutes.login_screen,
+                  );
                 },
                 verticalPadding: height * 0.01,
                 backgroundColor: AppColors.yellow,
                 child: Text(
-                  "Verify Email",
+                  localizations.verify_email,
                   style: AppStyles.regular20DarkGray,
                 ),
               ),

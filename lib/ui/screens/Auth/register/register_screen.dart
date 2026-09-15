@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/size_utils.dart';
 import '../../../../utils/app_assets.dart';
@@ -34,6 +35,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     var width = context.width;
     var height = context.height;
 
+    final localizations = AppLocalizations.of(context)!;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -42,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           backgroundColor: AppColors.black,
           title: Text(
-            "Register",
+            localizations.register,
             style: AppStyles.regular14Yellow,
           ),
         ),
@@ -61,7 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(
                     avatars.length,
-                    (index) {
+                        (index) {
                       final isSelected = selectedIndex == index;
 
                       return GestureDetector(
@@ -81,9 +84,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             shape: BoxShape.circle,
                             border: isSelected
                                 ? Border.all(
-                                    color: AppColors.yellow,
-                                    width: 4,
-                                  )
+                              color: AppColors.yellow,
+                              width: 4,
+                            )
                                 : null,
                           ),
                           child: CircleAvatar(
@@ -97,36 +100,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                   ),
                 ),
+
                 SizedBox(
                   height: height * 0.01,
                 ),
+
                 CustomTextField(
                   borderColor: AppColors.transparentColor,
                   filled: true,
                   fillColor: AppColors.darkGray,
-                  hintText: 'Name',
+                  hintText: localizations.name,
                   hintStyle: AppStyles.regular16White,
                   prefixIcon: Icon(
                     Icons.perm_identity_outlined,
                     color: AppColors.white,
                   ),
                 ),
+
                 CustomTextField(
                   borderColor: AppColors.transparentColor,
                   filled: true,
                   fillColor: AppColors.darkGray,
-                  hintText: 'Email',
+                  hintText: localizations.email,
                   hintStyle: AppStyles.regular16White,
                   prefixIcon: Icon(
                     Icons.email_rounded,
                     color: AppColors.white,
                   ),
                 ),
+
                 CustomTextField(
                   borderColor: AppColors.transparentColor,
                   filled: true,
                   fillColor: AppColors.darkGray,
-                  hintText: 'Password',
+                  hintText: localizations.password,
                   hintStyle: AppStyles.regular16White,
                   prefixIcon: Icon(
                     Icons.lock,
@@ -137,11 +144,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: AppColors.white,
                   ),
                 ),
+
                 CustomTextField(
                   borderColor: AppColors.transparentColor,
                   filled: true,
                   fillColor: AppColors.darkGray,
-                  hintText: 'Confirm Password',
+                  hintText: localizations.confirm_password,
                   hintStyle: AppStyles.regular16White,
                   prefixIcon: Icon(
                     Icons.lock,
@@ -152,53 +160,61 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: AppColors.white,
                   ),
                 ),
+
                 CustomTextField(
                   borderColor: AppColors.transparentColor,
                   filled: true,
                   fillColor: AppColors.darkGray,
-                  hintText: 'Phone Number',
+                  hintText: localizations.phone_number,
                   hintStyle: AppStyles.regular16White,
                   prefixIcon: Icon(
                     Icons.phone,
                     color: AppColors.white,
                   ),
                 ),
+
                 SizedBox(
                   width: double.infinity,
                   child: CustomElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed(AppRoutes.login_screen);
+                      Navigator.of(context).pushNamed(
+                        AppRoutes.login_screen,
+                      );
                     },
                     verticalPadding: height * 0.01,
                     backgroundColor: AppColors.yellow,
                     child: Text(
-                      "Create Account",
+                      localizations.create_account,
                       style: AppStyles.regular20DarkGray,
                     ),
                   ),
                 ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already Have Account ?",
+                      localizations.already_have_an_account,
                       style: AppStyles.regular14White,
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.pushReplacementNamed(
-                            context, AppRoutes.login_screen);
+                          context,
+                          AppRoutes.login_screen,
+                        );
                       },
                       child: Align(
                         alignment: AlignmentDirectional.center,
                         child: Text(
-                          "Login",
+                          localizations.login,
                           style: AppStyles.black14Yellow,
                         ),
                       ),
                     ),
                   ],
                 ),
+
                 Container(
                   width: 130,
                   height: 62,
@@ -243,6 +259,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ),
+
                       GestureDetector(
                         onTap: () {
                           setState(() {
