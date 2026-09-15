@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/size_utils.dart';
 import '../../../../utils/app_assets.dart';
@@ -19,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   int selectedLanguage = 0;
 
   var emailController = TextEditingController();
-
   var passwordController = TextEditingController();
 
   @override
@@ -27,36 +27,43 @@ class _LoginScreenState extends State<LoginScreen> {
     var width = context.width;
     var height = context.height;
 
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.black,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: width * 0.04, vertical: height * 0.02),
+            horizontal: width * 0.04,
+            vertical: height * 0.02,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: height * 0.02,
             children: [
               Image.asset(AppAssets.movieLogo),
+
               SizedBox(
                 height: height * 0.03,
               ),
+
               CustomTextField(
                 borderColor: AppColors.transparentColor,
                 filled: true,
                 fillColor: AppColors.darkGray,
-                hintText: 'Email',
+                hintText: localizations.email,
                 hintStyle: AppStyles.regular16White,
                 prefixIcon: Icon(
                   Icons.email_rounded,
                   color: AppColors.white,
                 ),
               ),
+
               CustomTextField(
                 borderColor: AppColors.transparentColor,
                 filled: true,
                 fillColor: AppColors.darkGray,
-                hintText: 'Password',
+                hintText: localizations.password,
                 hintStyle: AppStyles.regular16White,
                 prefixIcon: Icon(
                   Icons.lock,
@@ -67,18 +74,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: AppColors.white,
                 ),
               ),
+
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(AppRoutes.reset_password);
+                  Navigator.of(context).pushNamed(
+                    AppRoutes.reset_password,
+                  );
                 },
                 child: Align(
                   alignment: AlignmentDirectional.centerEnd,
                   child: Text(
-                    'Forget Password ?',
+                    localizations.forget_password,
                     style: AppStyles.regular14Yellow,
                   ),
                 ),
               ),
+
               SizedBox(
                 width: double.infinity,
                 child: CustomElevatedButton(
@@ -88,33 +99,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   verticalPadding: height * 0.01,
                   backgroundColor: AppColors.yellow,
                   child: Text(
-                    "Login",
+                    localizations.login,
                     style: AppStyles.regular20DarkGray,
                   ),
                 ),
               ),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Don't Have Account ?",
+                    localizations.dont_have_an_account,
                     style: AppStyles.regular14White,
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context)
-                          .pushNamed(AppRoutes.register_screen);
+                      Navigator.of(context).pushNamed(
+                        AppRoutes.register_screen,
+                      );
                     },
                     child: Align(
                       alignment: AlignmentDirectional.center,
                       child: Text(
-                        "Create One",
+                        localizations.create_one,
                         style: AppStyles.black14Yellow,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
+
               Row(
                 children: [
                   Expanded(
@@ -125,10 +139,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       endIndent: width * 0.04,
                     ),
                   ),
+
                   Text(
-                    "Or",
+                    localizations.or,
                     style: AppStyles.regular15Yellow,
                   ),
+
                   Expanded(
                     child: Divider(
                       thickness: 2,
@@ -139,6 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
+
               SizedBox(
                 width: double.infinity,
                 child: CustomElevatedButton(
@@ -153,13 +170,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Image.asset(AppAssets.googleLogo),
                       Text(
-                        "Login With Google ",
+                        localizations.login_with_google,
                         style: AppStyles.regular16DarkGray,
                       ),
                     ],
                   ),
                 ),
               ),
+
               Container(
                 width: 130,
                 height: 62,
@@ -204,6 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+
                     GestureDetector(
                       onTap: () {
                         setState(() {
