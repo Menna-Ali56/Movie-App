@@ -13,6 +13,11 @@ class AppAssets {
   static const String overLayer5 = 'assets/images/overLay_5.png';
   static const String movieLogo = 'assets/images/movie_logo.png';
   static const String googleLogo = 'assets/images/google_logo.png';
+  static const String Avatar_1 = 'assets/images/avatar_1.png';
+  static const String Avatar_2 = 'assets/images/avatar_2.png';
+  static const String Avatar_3 = 'assets/images/avatar_3.png';
+
+
 
 
 }
