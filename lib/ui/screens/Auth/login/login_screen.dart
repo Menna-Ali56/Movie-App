@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/size_utils.dart';
 import '../../../../utils/app_assets.dart';
 import '../../../../utils/app_colors.dart';
@@ -15,7 +16,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  int selectedIndex = 0;
+  int selectedIndex = 1;
+  int selectedLanguage = 0;
 
   var emailController = TextEditingController();
 
@@ -37,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
             spacing: height * 0.02,
             children: [
               Image.asset(AppAssets.movieLogo),
-              SizedBox(height: height*0.03,),
+              SizedBox(height: height * 0.03,),
               CustomTextField(
                 borderColor: AppColors.transparentColor,
                 filled: true,
@@ -61,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: AppColors.white,
                 ),
                 suffixIcon: Icon(Icons.visibility_off_rounded
-                ,color: AppColors.white,),
+                  , color: AppColors.white,),
               ),
 
               TextButton(
@@ -80,7 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 width: double.infinity,
                 child: CustomElevatedButton(
-                  onPressed: login,
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(AppRoutes.home);
+                  },
                   verticalPadding: height * 0.01,
                   backgroundColor: AppColors.yellow,
                   child: Text(
@@ -98,7 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      //todo:Navigation to register screen
+                      Navigator.of(context).pushNamed(
+                          AppRoutes.register_screen);
                     },
                     child: Align(
                       alignment: AlignmentDirectional.center,
@@ -159,47 +164,100 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 width: 130,
                 height: 62,
-                padding: const EdgeInsets.symmetric(horizontal: 7),
+
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 7,
+                ),
+
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: const Color(0xFFFFC107),
+                    color: AppColors.yellow,
                     width: 3,
                   ),
+
                   borderRadius: BorderRadius.circular(35),
                 ),
+
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+
                   children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: const BoxDecoration(
-                        color: AppColors.yellow,
-                        shape: BoxShape.circle,
-                      ),
-                      alignment: Alignment.center,
-                      child: const Text(
-                        '🇺🇸',
-                        style: TextStyle(fontSize: 30),
+
+                    // ================= ENGLISH =================
+
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedLanguage = 0;
+                        });
+
+                        print("English Selected");
+
+                        // TODO: English onTap
+                      },
+
+                      child: Container(
+                        width: 48,
+                        height: 48,
+
+                        decoration: BoxDecoration(
+                          color: selectedLanguage == 0
+                              ? AppColors.yellow
+                              : AppColors.transparentColor,
+
+                          shape: BoxShape.circle,
+                        ),
+
+                        alignment: Alignment.center,
+
+                        child: const Text(
+                          '🇺🇸',
+                          style: TextStyle(
+                            fontSize: 30,
+                          ),
+                        ),
                       ),
                     ),
 
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: const BoxDecoration(
-                        color: AppColors.transparentColor,
-                        shape: BoxShape.circle,
-                      ),
-                      alignment: Alignment.center,
-                      child: const Text(
-                        '🇪🇬',
-                        style: TextStyle(fontSize: 30),
+                    // ================= ARABIC =================
+
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedLanguage = 1;
+                        });
+
+                        print("Arabic Selected");
+
+                        // TODO: Arabic onTap
+                      },
+
+                      child: Container(
+                        width: 48,
+                        height: 48,
+
+                        decoration: BoxDecoration(
+                          color: selectedLanguage == 1
+                              ? AppColors.yellow
+                              : AppColors.transparentColor,
+
+                          shape: BoxShape.circle,
+                        ),
+
+                        alignment: Alignment.center,
+
+                        child: const Text(
+                          '🇪🇬',
+                          style: TextStyle(
+                            fontSize: 30,
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -207,5 +265,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void login() {}
 }
