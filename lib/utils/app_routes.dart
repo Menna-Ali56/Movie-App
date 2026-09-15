@@ -1,0 +1,5 @@
+class AppRoutes {
+  static const String onboarding = 'OnBoardingScreen';
+  static const String home = 'HomeScreen';
+  static const String login_screen = 'LoginScreen';
+}
