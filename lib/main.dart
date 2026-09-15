@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/ui/screens/Auth/register/register_screen.dart';
+import 'package:movie_app/ui/screens/Auth/reset_password/reset_password.dart';
 
 import 'ui/screens/Auth/login/login_screen.dart';
 import 'ui/screens/home/home_screen.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.home: (context) => const HomeScreen(),
         AppRoutes.login_screen:(context)=> LoginScreen(),
         AppRoutes.register_screen:(context)=> RegisterScreen(),
+        AppRoutes.reset_password:(context)=>const ResetPassword(),
       }
       ,
     );

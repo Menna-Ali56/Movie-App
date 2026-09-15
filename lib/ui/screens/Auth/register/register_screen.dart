@@ -21,9 +21,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   int selectedLanguage = 0;
 
   final List<String> avatars = [
-    AppAssets.Avatar_1,
-    AppAssets.Avatar_2,
-    AppAssets.Avatar_3,
+    AppAssets.avatar_1,
+    AppAssets.avatar_2,
+    AppAssets.avatar_3,
   ];
 
   var emailController = TextEditingController();
@@ -46,29 +46,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
             style: AppStyles.regular14Yellow,
           ),
         ),
-
         backgroundColor: AppColors.black,
-
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: width * 0.04,
               vertical: height * 0.02,
             ),
-
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: height * 0.02,
-
               children: [
-
-                // ================= AVATARS =================
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(
                     avatars.length,
-                        (index) {
+                    (index) {
                       final isSelected = selectedIndex == index;
 
                       return GestureDetector(
@@ -79,25 +72,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           print('Selected Avatar: $index');
                         },
-
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
-
                           padding: EdgeInsets.all(
                             isSelected ? 4 : 0,
                           ),
-
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-
                             border: isSelected
                                 ? Border.all(
-                              color: AppColors.yellow,
-                              width: 4,
-                            )
+                                    color: AppColors.yellow,
+                                    width: 4,
+                                  )
                                 : null,
                           ),
-
                           child: CircleAvatar(
                             radius: isSelected ? 60 : 45,
                             backgroundImage: AssetImage(
@@ -109,13 +97,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                   ),
                 ),
-
                 SizedBox(
                   height: height * 0.01,
                 ),
-
-                // ================= NAME =================
-
                 CustomTextField(
                   borderColor: AppColors.transparentColor,
                   filled: true,
@@ -127,9 +111,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: AppColors.white,
                   ),
                 ),
-
-                // ================= EMAIL =================
-
                 CustomTextField(
                   borderColor: AppColors.transparentColor,
                   filled: true,
@@ -141,9 +122,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: AppColors.white,
                   ),
                 ),
-
-                // ================= PASSWORD =================
-
                 CustomTextField(
                   borderColor: AppColors.transparentColor,
                   filled: true,
@@ -159,9 +137,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: AppColors.white,
                   ),
                 ),
-
-                // ================= CONFIRM PASSWORD =================
-
                 CustomTextField(
                   borderColor: AppColors.transparentColor,
                   filled: true,
@@ -177,9 +152,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: AppColors.white,
                   ),
                 ),
-
-                // ================= PHONE =================
-
                 CustomTextField(
                   borderColor: AppColors.transparentColor,
                   filled: true,
@@ -191,45 +163,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: AppColors.white,
                   ),
                 ),
-
-                // ================= CREATE ACCOUNT =================
-
                 SizedBox(
                   width: double.infinity,
-
                   child: CustomElevatedButton(
-                    onPressed: () {},
-
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(AppRoutes.login_screen);
+                    },
                     verticalPadding: height * 0.01,
-
                     backgroundColor: AppColors.yellow,
-
                     child: Text(
                       "Create Account",
                       style: AppStyles.regular20DarkGray,
                     ),
                   ),
                 ),
-
-                // ================= LOGIN =================
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-
                   children: [
                     Text(
                       "Already Have Account ?",
                       style: AppStyles.regular14White,
                     ),
-
                     TextButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, AppRoutes.login_screen);
+                        Navigator.pushReplacementNamed(
+                            context, AppRoutes.login_screen);
                       },
-
                       child: Align(
                         alignment: AlignmentDirectional.center,
-
                         child: Text(
                           "Login",
                           style: AppStyles.black14Yellow,
@@ -238,37 +199,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ],
                 ),
-
-
-
-
-                // ================= LANGUAGE SWITCHER =================
-
                 Container(
                   width: 130,
                   height: 62,
-
                   padding: const EdgeInsets.symmetric(
                     horizontal: 7,
                   ),
-
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: AppColors.yellow,
                       width: 3,
                     ),
-
                     borderRadius: BorderRadius.circular(35),
                   ),
-
                   child: Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
-
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-
-                      // ================= ENGLISH =================
-
                       GestureDetector(
                         onTap: () {
                           setState(() {
@@ -279,21 +225,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           // TODO: English onTap
                         },
-
                         child: Container(
                           width: 48,
                           height: 48,
-
                           decoration: BoxDecoration(
                             color: selectedLanguage == 0
                                 ? AppColors.yellow
                                 : AppColors.transparentColor,
-
                             shape: BoxShape.circle,
                           ),
-
                           alignment: Alignment.center,
-
                           child: const Text(
                             '🇺🇸',
                             style: TextStyle(
@@ -302,9 +243,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ),
-
-                      // ================= ARABIC =================
-
                       GestureDetector(
                         onTap: () {
                           setState(() {
@@ -315,21 +253,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           // TODO: Arabic onTap
                         },
-
                         child: Container(
                           width: 48,
                           height: 48,
-
                           decoration: BoxDecoration(
                             color: selectedLanguage == 1
                                 ? AppColors.yellow
                                 : AppColors.transparentColor,
-
                             shape: BoxShape.circle,
                           ),
-
                           alignment: Alignment.center,
-
                           child: const Text(
                             '🇪🇬',
                             style: TextStyle(
