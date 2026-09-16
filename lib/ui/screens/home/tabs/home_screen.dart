@@ -2,10 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/ui/screens/home/apis/api_movie.dart';
+import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
 import 'package:movie_app/utils/app_assets.dart';
-import 'package:movie_app/utils/size_utils.dart';
 
-import '../../../../utils/app_colors.dart';
+import '../../../../../utils/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,7 +15,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<Widget> tabs = [HomeScreen()];
   String? backgroundImage;
+  late Future<dynamic> ImageMovie;
+  int currentIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    ImageMovie = ApiMovie.getMovie();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,33 +38,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? Image.network(
                       backgroundImage!,
                       key: ValueKey<String>(backgroundImage!),
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity,
+                      fit: BoxFit.fill,
+                      width: MediaQuery.of(context).size.width * 1,
+                      height: MediaQuery.of(context).size.height * 0.90,
                       errorBuilder: (context, error, stackTrace) => Image.asset(
                         AppAssets.homeImage,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
+                        fit: BoxFit.fill,
+                        width: MediaQuery.of(context).size.width * 1,
+                        height: MediaQuery.of(context).size.height * 0.92,
                       ),
                     )
                   : Image.asset(
                       AppAssets.homeImage,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity,
+                      fit: BoxFit.fill,
+                      width: MediaQuery.of(context).size.width * 1,
+                      height: MediaQuery.of(context).size.height * 0.90,
                     ),
             ),
           ),
           Positioned.fill(
+            bottom: 200,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    AppColors.black.withValues(alpha: 0.60),
-                    AppColors.black.withValues(alpha: 0.95),
+                    AppColors.black2.withValues(alpha: 0.60),
+                    AppColors.black2.withValues(alpha: 2.5),
                   ],
                 ),
               ),
@@ -65,14 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
           Scaffold(
             backgroundColor: AppColors.transparentColor,
             body: SizedBox(
-              width: SizeConfig.width(context),
-              height: SizeConfig.height(context),
               child: Column(
                 children: [
                   Image.asset(AppAssets.availableNow),
                   Expanded(
                     child: FutureBuilder(
-                      future: ApiMovie.getMovie(),
+                      future: ImageMovie,
                       builder: (context, snap) {
                         if (snap.connectionState == ConnectionState.waiting) {
                           return const Center(
@@ -113,54 +120,70 @@ class _HomeScreenState extends State<HomeScreen> {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             if (mounted) {
                               setState(() {
-                                backgroundImage =
-                                    movieList[0].backgroundImageOriginal ??
-                                        movieList[1].largeCoverImage;
+                                backgroundImage = movieList[0].largeCoverImage;
                               });
                             }
                           });
                         }
-
-                        return CarouselSlider.builder(
-                          itemCount: movieList.length,
-                          itemBuilder: (context, index, realIndex) {
-                            Movies movie = movieList[index];
-                            return Container(
-                              clipBehavior: Clip.hardEdge,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Image.network(
-                                "${movie.mediumCoverImage}",
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(
-                                  Icons.broken_image,
-                                  color: Colors.white,
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              CarouselSlider.builder(
+                                itemCount: movieList.length,
+                                itemBuilder: (context, index, realIndex) {
+                                  final movie = movieList[index];
+                                  return MovieCard(movie: movie);
+                                },
+                                options: CarouselOptions(
+                                  autoPlay: true,
+                                  enlargeCenterPage: true,
+                                  viewportFraction: 0.5,
+                                  aspectRatio: 8 / 6,
+                                  initialPage: 0,
+                                  clipBehavior: Clip.antiAlias,
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                  enableInfiniteScroll: true,
+                                  autoPlayAnimationDuration:
+                                      Duration(milliseconds: 500),
+                                  onPageChanged: (index, reason) {
+                                    setState(() {
+                                      currentIndex = index;
+                                      backgroundImage =
+                                          movieList[index].largeCoverImage;
+                                    });
+                                  },
                                 ),
                               ),
-                            );
-                          },
-                          options: CarouselOptions(
-                            autoPlay: true,
-                            enlargeCenterPage: true,
-                            viewportFraction: 0.5,
-                            aspectRatio: 8 / 6,
-                            initialPage: 0,
-                            clipBehavior: Clip.antiAlias,
-                            // onPageChanged: (index, reason) {
-                            //   setState(() {
-                            //     backgroundImage =
-                            //         movieList[index].backgroundImageOriginal ??
-                            //             movieList[index].largeCoverImage;
-                            //   });
-                            // },
+                              Image.asset(
+                                AppAssets.watchNow,
+                                width: 245,
+                              ),
+                              CarouselSlider.builder(
+                                itemCount: movieList.length,
+                                itemBuilder: (context, index, realIndex) {
+                                  final movie = movieList[index];
+                                  return MovieCard(movie: movie);
+                                },
+                                options: CarouselOptions(
+                                  autoPlay: false,
+                                  enlargeCenterPage: false,
+                                  viewportFraction: 0.4,
+                                  aspectRatio: 6 / 3,
+                                  initialPage: 0,
+                                  scrollDirection: Axis.horizontal,
+                                  clipBehavior: Clip.antiAlias,
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                  enableInfiniteScroll: true,
+                                  autoPlayAnimationDuration:
+                                      Duration(milliseconds: 500),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },
                     ),
                   ),
-                  Image.asset(AppAssets.watchNow),
                 ],
               ),
             ),

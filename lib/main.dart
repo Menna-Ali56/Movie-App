@@ -3,9 +3,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/ui/screens/Auth/register/register_screen.dart';
 import 'package:movie_app/ui/screens/Auth/reset_password/reset_password.dart';
+import 'package:movie_app/ui/screens/home/widgets/bottom_bar.dart';
 
 import 'ui/screens/Auth/login/login_screen.dart';
-import 'ui/screens/home/home_screen.dart';
+import 'ui/screens/home/tabs/home_screen.dart';
 import 'ui/screens/onboarding/onboarding_screen.dart';
 import 'utils/app_routes.dart';
 
@@ -27,13 +28,14 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      initialRoute: AppRoutes.home,
+      initialRoute: AppRoutes.bottom_bar,
       routes: {
         AppRoutes.onboarding: (context) => const OnboardingScreen(),
         AppRoutes.login_screen: (context) => LoginScreen(),
         AppRoutes.home: (context) => const HomeScreen(),
         AppRoutes.register_screen: (context) => RegisterScreen(),
         AppRoutes.reset_password: (context) => const ResetPassword(),
+        AppRoutes.bottom_bar: (context) => const BottomBar(),
       },
     );
   }
