@@ -22,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          // 1. الخلفية الديناميكية
           Positioned.fill(
             bottom: 50,
             child: AnimatedSwitcher(
@@ -49,8 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
             ),
           ),
-
-          // 2. التدرج اللوني فوق الخلفية
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -65,8 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-
-          // 3. الواجهة الرئيسية
           Scaffold(
             backgroundColor: AppColors.transparentColor,
             body: SizedBox(
@@ -114,14 +109,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         }
 
-                        // ✅ ضبط الخلفية لأول مرة بناءً على أول فيلم عند اكتمال التحميل
                         if (backgroundImage == null && movieList.isNotEmpty) {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             if (mounted) {
                               setState(() {
                                 backgroundImage =
                                     movieList[0].backgroundImageOriginal ??
-                                        movieList[0].largeCoverImage;
+                                        movieList[1].largeCoverImage;
                               });
                             }
                           });
@@ -152,16 +146,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             enlargeCenterPage: true,
                             viewportFraction: 0.5,
                             aspectRatio: 8 / 6,
-                            initialPage:
-                                0, // ✅ توحيد البداية مع العنصر الأول (0)
+                            initialPage: 0,
                             clipBehavior: Clip.antiAlias,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                backgroundImage =
-                                    movieList[index].backgroundImageOriginal ??
-                                        movieList[index].largeCoverImage;
-                              });
-                            },
+                            // onPageChanged: (index, reason) {
+                            //   setState(() {
+                            //     backgroundImage =
+                            //         movieList[index].backgroundImageOriginal ??
+                            //             movieList[index].largeCoverImage;
+                            //   });
+                            // },
                           ),
                         );
                       },
