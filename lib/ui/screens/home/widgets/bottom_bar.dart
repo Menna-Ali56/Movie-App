@@ -1,5 +1,6 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_app/ui/screens/home/tabs/browse_tab.dart';
 import 'package:movie_app/ui/screens/home/tabs/home_screen.dart';
 import 'package:movie_app/ui/screens/home/tabs/search_tab.dart';
 import 'package:movie_app/utils/app_assets.dart';
@@ -13,13 +14,13 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
-  List<Widget> tabs = [HomeScreen(), SearchTab(), SearchTab(), SearchTab()];
+  List<Widget> tabs = [HomeScreen(), SearchTab(), BrowseTab(), SearchTab()];
   int currentIndex = 0;
   bool isSelect = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black2,
+      backgroundColor: AppColors.transparentColor,
       body: tabs[currentIndex],
       bottomNavigationBar: Container(
         margin: EdgeInsets.only(right: 9, left: 9, bottom: 9),

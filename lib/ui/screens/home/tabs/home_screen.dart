@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     )
                   : Image.asset(
-                      AppAssets.homeImage,
+                      AppAssets.overLayer5,
                       fit: BoxFit.fill,
                       width: MediaQuery.of(context).size.width * 1,
                       height: MediaQuery.of(context).size.height * 0.90,
