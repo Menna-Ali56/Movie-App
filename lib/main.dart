@@ -12,7 +12,8 @@ import 'ui/screens/home/tabs/home_screen.dart';
 import 'ui/screens/onboarding/onboarding_screen.dart';
 import 'utils/app_routes.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized;
   runApp(const MyApp());
 }
 

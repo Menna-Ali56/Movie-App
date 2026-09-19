@@ -10,6 +10,7 @@ class SearchTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: AppColors.black2,
         body: SizedBox(
           child: Container(

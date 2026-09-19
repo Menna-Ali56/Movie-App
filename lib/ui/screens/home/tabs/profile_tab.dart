@@ -111,10 +111,7 @@ class ProfileTab extends StatelessWidget {
                                   backgroundColor: AppColors.red,
                                   radius: 15,
                                   verticalPadding: 15,
-                                  onPressed: () {
-                                    Navigator.popAndPushNamed(
-                                        context, AppRoutes.update_profile);
-                                  },
+                                  onPressed: () {},
                                   child: Image.asset(AppAssets.iconExit),
                                 ),
                               ),

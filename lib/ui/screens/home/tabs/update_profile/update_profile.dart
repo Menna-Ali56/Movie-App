@@ -14,10 +14,10 @@ class UpdateProfile extends StatefulWidget {
 }
 
 class _UpdateProfileState extends State<UpdateProfile> {
-  String newImage = AppAssets.avatar_1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.transparentColor,
       appBar: AppBar(
         backgroundColor: AppColors.transparentColor,
@@ -60,9 +60,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 splashColor: AppColors.transparentColor,
                 highlightColor: AppColors.transparentColor,
                 child: Center(child: Image.asset(AppAssets.avatar_1)),
-                onTap: () async {
-                  final String? selectesImage =
-                      await showModalBottomSheet<String>(
+                onTap: () {
+                  showModalBottomSheet(
                     backgroundColor: AppColors.transparentColor,
                     context: context,
                     builder: (context) {
@@ -120,7 +119,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               padding: const EdgeInsets.only(top: 40, right: 10, left: 10),
               child: TextField(
                 cursorColor: AppColors.yellow,
-                style: TextStyle(color: AppColors.darkGray),
+                style: TextStyle(color: AppColors.yellow),
                 decoration: InputDecoration(
                   fillColor: AppColors.darkGray,
                   filled: true,
@@ -139,8 +138,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
             Padding(
               padding: const EdgeInsets.only(top: 15, right: 10, left: 10),
               child: TextField(
-                cursorColor: AppColors.yellow,
-                style: TextStyle(color: AppColors.darkGray),
+                style: TextStyle(color: AppColors.yellow),
                 decoration: InputDecoration(
                   fillColor: AppColors.darkGray,
                   filled: true,
