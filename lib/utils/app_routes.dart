@@ -5,4 +5,6 @@ class AppRoutes {
   static const String register_screen = 'RegisterScreen';
   static const String reset_password = 'ResetPassword';
   static const String bottom_bar = 'BottomBar';
+  static const String update_profile = 'UpdateProfile';
+  static const String profile_tab = 'profile_tab';
 }

@@ -17,29 +17,24 @@ class SearchTab extends StatelessWidget {
             width: SizeConfig.width(context),
             child: Column(
               children: [
-                Container(
-                  height: 55,
-                  width: 398,
-                  margin: EdgeInsets.only(top: 21, right: 16, left: 16),
-                  decoration: BoxDecoration(
-                      color: AppColors.darkGray,
-                      borderRadius: BorderRadius.circular(15)),
+                Padding(
+                  padding: const EdgeInsets.all(10),
                   child: TextField(
                     style: TextStyle(color: AppColors.yellow),
                     decoration: InputDecoration(
-                      icon: Padding(
+                      prefixIcon: Padding(
                         padding: const EdgeInsets.only(
                             top: 17, left: 10, bottom: 17),
                         child: Image.asset(AppAssets.searchTab),
                       ),
+                      fillColor: AppColors.darkGray,
+                      filled: true,
                       hintText: "Search ",
                       hintStyle: TextStyle(color: AppColors.white),
-                      contentPadding: EdgeInsets.only(top: 19, bottom: 19),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                          width: 1,
-                        ),
                       ),
                     ),
                   ),

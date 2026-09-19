@@ -2,6 +2,7 @@ import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/ui/screens/home/tabs/browse_tab.dart';
 import 'package:movie_app/ui/screens/home/tabs/home_screen.dart';
+import 'package:movie_app/ui/screens/home/tabs/profile_tab.dart';
 import 'package:movie_app/ui/screens/home/tabs/search_tab.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
@@ -14,7 +15,7 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
-  List<Widget> tabs = [HomeScreen(), SearchTab(), BrowseTab(), SearchTab()];
+  List<Widget> tabs = [HomeScreen(), SearchTab(), BrowseTab(), ProfileTab()];
   int currentIndex = 0;
   bool isSelect = false;
   @override
@@ -26,7 +27,7 @@ class _BottomBarState extends State<BottomBar> {
         margin: EdgeInsets.only(right: 9, left: 9, bottom: 9),
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(
-          color: AppColors.darkGray,
+          color: AppColors.transparentColor,
           borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
         child: Theme(
@@ -34,7 +35,7 @@ class _BottomBarState extends State<BottomBar> {
               splashColor: AppColors.transparentColor,
               highlightColor: AppColors.transparentColor),
           child: BottomNavigationBar(
-            backgroundColor: AppColors.transparentColor,
+            backgroundColor: AppColors.darkGray,
             elevation: 0,
             type: BottomNavigationBarType.fixed,
             showSelectedLabels: false,
