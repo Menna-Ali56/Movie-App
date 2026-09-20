@@ -30,6 +30,16 @@ class AppStyles {
     fontSize: 20,
     fontWeight: FontWeight.w400,
   );
+  static TextStyle roboto20White = TextStyle(
+    color: AppColors.white,
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
+  );
+  static TextStyle roboto20White500 = TextStyle(
+    color: AppColors.white,
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+  );
   static TextStyle regular14White = TextStyle(
     color: AppColors.white,
     fontSize: 14,
