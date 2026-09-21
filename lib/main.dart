@@ -8,6 +8,12 @@ import 'package:movie_app/ui/screens/home/home_screen.dart';
 
 import 'ui/screens/Auth/login/login_screen.dart';
 
+import 'package:movie_app/ui/screens/home/tabs/profile_tab.dart';
+import 'package:movie_app/ui/screens/home/tabs/update_profile/update_profile.dart';
+import 'package:movie_app/ui/screens/home/widgets/bottom_bar.dart';
+
+import 'ui/screens/Auth/login/login_screen.dart';
+import 'ui/screens/home/tabs/home_screen.dart';
 import 'ui/screens/onboarding/onboarding_screen.dart';
 import 'utils/app_routes.dart';
 
@@ -31,6 +37,7 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       initialRoute: AppRoutes.onboarding,
+      initialRoute: AppRoutes.bottom_bar,
       routes: {
         AppRoutes.onboarding: (context) => const OnboardingScreen(),
         AppRoutes.login_screen: (context) => LoginScreen(),
@@ -38,6 +45,9 @@ class MyApp extends StatelessWidget {
         AppRoutes.register_screen: (context) => RegisterScreen(),
         AppRoutes.reset_password: (context) => const ResetPassword(),
 
+        AppRoutes.bottom_bar: (context) => const BottomBar(),
+        AppRoutes.update_profile: (context) => const UpdateProfile(),
+        AppRoutes.profile_tab: (context) => const ProfileTab(),
       },
     );
   }
