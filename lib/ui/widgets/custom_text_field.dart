@@ -20,6 +20,7 @@ class CustomTextField extends StatelessWidget {
   final OnChanged onChanged;
   final onValidator validator;
   final TextInputType? KeyboardType;
+
   final bool obscureText;
   const CustomTextField({super.key, this.radius, required this.borderColor,
     this.filled, this.fillColor,  this.hintText,  this.labelText,
@@ -31,7 +32,10 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return TextFormField(
-
+      style: TextStyle(
+        color: AppColors.white,
+        fontSize: 16,
+      ),
       decoration: InputDecoration(
         enabledBorder: _builtDecorationBorder(radius: radius ?? 16, borderColor: borderColor),
         focusedBorder: _builtDecorationBorder(radius: radius ?? 16, borderColor: borderColor),
@@ -66,3 +70,9 @@ class CustomTextField extends StatelessWidget {
   }
 
 }
+
+
+
+
+
+

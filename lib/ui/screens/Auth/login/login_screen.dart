@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/utils/app_routes.dart';
@@ -5,6 +6,7 @@ import 'package:movie_app/utils/size_utils.dart';
 import '../../../../utils/app_assets.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_styles.dart';
+import '../../../../utils/dialog_utils.dart';
 import '../../../widgets/custom_elevated_button.dart';
 import '../../../widgets/custom_text_field.dart';
 
@@ -21,6 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+  var formKey=GlobalKey<FormState>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,235 +33,306 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final localizations = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: AppColors.black,
-      body: SafeArea(
-        child: Padding(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppColors.black,
+        body: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: width * 0.04,
             vertical: height * 0.02,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: height * 0.02,
-            children: [
-              Image.asset(AppAssets.movieLogo),
-
-              SizedBox(
-                height: height * 0.03,
-              ),
-
-              CustomTextField(
-                borderColor: AppColors.transparentColor,
-                filled: true,
-                fillColor: AppColors.darkGray,
-                hintText: localizations.email,
-                hintStyle: AppStyles.regular16White,
-                prefixIcon: Icon(
-                  Icons.email_rounded,
-                  color: AppColors.white,
-                ),
-              ),
-
-              CustomTextField(
-                borderColor: AppColors.transparentColor,
-                filled: true,
-                fillColor: AppColors.darkGray,
-                hintText: localizations.password,
-                hintStyle: AppStyles.regular16White,
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: AppColors.white,
-                ),
-                suffixIcon: Icon(
-                  Icons.visibility_off_rounded,
-                  color: AppColors.white,
-                ),
-              ),
-
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    AppRoutes.reset_password,
-                  );
-                },
-                child: Align(
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: Text(
-                    localizations.forget_password,
-                    style: AppStyles.regular14Yellow,
-                  ),
-                ),
-              ),
-
-              SizedBox(
-                width: double.infinity,
-                child: CustomElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(AppRoutes.home);
-                  },
-                  verticalPadding: height * 0.01,
-                  backgroundColor: AppColors.yellow,
-                  child: Text(
-                    localizations.login,
-                    style: AppStyles.regular20DarkGray,
-                  ),
-                ),
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          child: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: height * 0.02,
                 children: [
-                  Text(
-                    localizations.dont_have_an_account,
-                    style: AppStyles.regular14White,
+                  Image.asset(AppAssets.movieLogo),
+
+                  SizedBox(
+                    height: height * 0.03,
                   ),
+
+                  CustomTextField(
+                    controller: emailController,
+                    KeyboardType: TextInputType.emailAddress,
+                    validator: (text) {
+                      if (text == null || text.trim().isEmpty) {
+                        return 'Please Enter an email';
+                      }
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(emailController.text)) {
+                        return 'Please enter a valid email address';
+                      }
+                      return null;
+                    },
+
+
+                    borderColor: AppColors.transparentColor,
+                    filled: true,
+                    fillColor: AppColors.darkGray,
+                    hintText: localizations.email,
+                    hintStyle: AppStyles.regular16White,
+                    prefixIcon: Icon(
+                      Icons.email_rounded,
+                      color: AppColors.white,
+                    ),
+                  ),
+
+                  CustomTextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    validator: (password) {
+                      if (password == null || password.trim().isEmpty) {
+                        return 'Please Enter a Password';
+                      }
+                      if (password.length < 6) {
+                        return 'Password must be at least 6 characters long';
+                      }
+                      return null;
+                    },
+                    borderColor: AppColors.transparentColor,
+                    filled: true,
+                    fillColor: AppColors.darkGray,
+                    hintText: localizations.password,
+                    hintStyle: AppStyles.regular16White,
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      color: AppColors.white,
+                    ),
+                    suffixIcon: Icon(
+                      Icons.visibility_off_rounded,
+                      color: AppColors.white,
+                    ),
+                  ),
+
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pushNamed(
-                        AppRoutes.register_screen,
+                        AppRoutes.reset_password,
                       );
                     },
                     child: Align(
-                      alignment: AlignmentDirectional.center,
+                      alignment: AlignmentDirectional.centerEnd,
                       child: Text(
-                        localizations.create_one,
-                        style: AppStyles.black14Yellow,
+                        localizations.forget_password,
+                        style: AppStyles.regular14Yellow,
                       ),
                     ),
                   ),
-                ],
-              ),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: Divider(
-                      thickness: 2,
-                      color: AppColors.yellow,
-                      indent: width * 0.01,
-                      endIndent: width * 0.04,
+                  SizedBox(
+                    width: double.infinity,
+                    child: CustomElevatedButton(
+                      onPressed: login,
+                      verticalPadding: height * 0.01,
+                      backgroundColor: AppColors.yellow,
+                      child: Text(
+                        localizations.login,
+                        style: AppStyles.regular20DarkGray,
+                      ),
                     ),
                   ),
 
-                  Text(
-                    localizations.or,
-                    style: AppStyles.regular15Yellow,
-                  ),
-
-                  Expanded(
-                    child: Divider(
-                      thickness: 2,
-                      color: AppColors.yellow,
-                      indent: width * 0.01,
-                      endIndent: width * 0.04,
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(
-                width: double.infinity,
-                child: CustomElevatedButton(
-                  onPressed: () {
-                    //todo: Logon with google
-                  },
-                  verticalPadding: height * 0.02,
-                  backgroundColor: AppColors.yellow,
-                  child: Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: width * 0.04,
                     children: [
-                      Image.asset(AppAssets.googleLogo),
                       Text(
-                        localizations.login_with_google,
-                        style: AppStyles.regular16DarkGray,
+                        localizations.dont_have_an_account,
+                        style: AppStyles.regular14White,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                            AppRoutes.register_screen,
+                          );
+                        },
+                        child: Align(
+                          alignment: AlignmentDirectional.center,
+                          child: Text(
+                            localizations.create_one,
+                            style: AppStyles.black14Yellow,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ),
 
-              Container(
-                width: 130,
-                height: 62,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 7,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: AppColors.yellow,
-                    width: 3,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          thickness: 2,
+                          color: AppColors.yellow,
+                          indent: width * 0.01,
+                          endIndent: width * 0.04,
+                        ),
+                      ),
+
+                      Text(
+                        localizations.or,
+                        style: AppStyles.regular15Yellow,
+                      ),
+
+                      Expanded(
+                        child: Divider(
+                          thickness: 2,
+                          color: AppColors.yellow,
+                          indent: width * 0.01,
+                          endIndent: width * 0.04,
+                        ),
+                      ),
+                    ],
                   ),
-                  borderRadius: BorderRadius.circular(35),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedLanguage = 0;
-                        });
 
-                        print("English Selected");
-
-                        // TODO: English onTap
+                  SizedBox(
+                    width: double.infinity,
+                    child: CustomElevatedButton(
+                      onPressed: () {
+                        //todo: Logon with google
                       },
-                      child: Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: selectedLanguage == 0
-                              ? AppColors.yellow
-                              : AppColors.transparentColor,
-                          shape: BoxShape.circle,
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text(
-                          '🇺🇸',
-                          style: TextStyle(
-                            fontSize: 30,
+                      verticalPadding: height * 0.02,
+                      backgroundColor: AppColors.yellow,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: width * 0.04,
+                        children: [
+                          Image.asset(AppAssets.googleLogo),
+                          Text(
+                            localizations.login_with_google,
+                            style: AppStyles.regular16DarkGray,
                           ),
-                        ),
+                        ],
                       ),
                     ),
+                  ),
 
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedLanguage = 1;
-                        });
+                  Container(
+                    width: 130,
+                    height: 62,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColors.yellow,
+                        width: 3,
+                      ),
+                      borderRadius: BorderRadius.circular(35),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedLanguage = 0;
+                            });
 
-                        print("Arabic Selected");
+                            print("English Selected");
 
-                        // TODO: Arabic onTap
-                      },
-                      child: Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: selectedLanguage == 1
-                              ? AppColors.yellow
-                              : AppColors.transparentColor,
-                          shape: BoxShape.circle,
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text(
-                          '🇪🇬',
-                          style: TextStyle(
-                            fontSize: 30,
+                            // TODO: English onTap
+                          },
+                          child: Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: selectedLanguage == 0
+                                  ? AppColors.yellow
+                                  : AppColors.transparentColor,
+                              shape: BoxShape.circle,
+                            ),
+                            alignment: Alignment.center,
+                            child: const Text(
+                              '🇺🇸',
+                              style: TextStyle(
+                                fontSize: 30,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedLanguage = 1;
+                            });
+
+                            print("Arabic Selected");
+
+                            // TODO: Arabic onTap
+                          },
+                          child: Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: selectedLanguage == 1
+                                  ? AppColors.yellow
+                                  : AppColors.transparentColor,
+                              shape: BoxShape.circle,
+                            ),
+                            alignment: Alignment.center,
+                            child: const Text(
+                              '🇪🇬',
+                              style: TextStyle(
+                                fontSize: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  void login()async{
+    if (formKey.currentState!.validate()==true) {
+      try {
+        //todo: show loadding
+        DialogUtils.showLoading(context: context, loadingText: 'Loading....');
+        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+
+        //todo: hide loading
+        DialogUtils.hideLoadong(context: context);
+
+        // todo: show message
+        DialogUtils.showMessage(context: context,
+            message: 'Login Successfully.',
+            title: 'Success',posActionName: 'OK',posAction: (){
+              Navigator.of(context).pushNamed(AppRoutes.bottom_bar);
+            });
+
+
+      } on FirebaseAuthException catch (e) {
+
+        if (e.code == 'invalid-credential') {
+          //todo: hide loading
+          DialogUtils.hideLoadong(context: context);
+          // todo: show message>> error
+          DialogUtils.showMessage(context: context,
+              message: 'The Supplied auth Credential is in correct',
+              title: 'Error',posActionName: 'OK');
+        }
+      }catch(e){
+        //todo: hide loading
+        DialogUtils.hideLoadong(context: context);
+        // todo: show message>> error
+        DialogUtils.showMessage(context: context,
+            message: e.toString(),
+            title: 'Error',posActionName: 'OK');
+        print(e.toString());
+      }
+    }
+  }
 }
+
