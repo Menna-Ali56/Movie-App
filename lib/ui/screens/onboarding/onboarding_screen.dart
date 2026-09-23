@@ -18,7 +18,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _goToHome() {
     Navigator.of(context).pushReplacementNamed(
-      AppRoutes.home,
+      AppRoutes.login_screen,
     );
   }
 
