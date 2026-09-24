@@ -7,8 +7,9 @@ class ApiMovie {
 
   static Future<MovieModel> getMovie() async {
     try {
-      Response response = await dio.get('/api/v2/list_movies.json',
-          queryParameters: {'Accept-Encoding': 'Accept-Encoding: '});
+      Response response = await dio.get(
+        '/api/v2/list_movies.json',
+      );
 
       MovieModel movies = MovieModel.fromJson(response.data);
       return movies;

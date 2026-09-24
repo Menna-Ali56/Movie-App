@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/ui/screens/Auth/register/register_screen.dart';
 import 'package:movie_app/ui/screens/Auth/reset_password/reset_password.dart';
+import 'package:movie_app/ui/screens/home/tabs/movie_details/movie_details_screen.dart';
 import 'package:movie_app/ui/screens/home/tabs/profile_tab.dart';
 import 'package:movie_app/ui/screens/home/tabs/update_profile/update_profile.dart';
 import 'package:movie_app/ui/screens/home/widgets/bottom_bar.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.bottom_bar: (context) => const BottomBar(),
         AppRoutes.update_profile: (context) => const UpdateProfile(),
         AppRoutes.profile_tab: (context) => const ProfileTab(),
+        AppRoutes.movie_details_screen: (context) => const MovieDetailsScreen(),
       },
     );
   }
