@@ -9,7 +9,7 @@ import '../../../../utils/app_styles.dart';
 import '../../../../utils/dialog_utils.dart';
 import '../../../widgets/custom_elevated_button.dart';
 import '../../../widgets/custom_text_field.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
 
@@ -188,9 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: CustomElevatedButton(
-                      onPressed: () {
-                        //todo: Logon with google
-                      },
+                      onPressed: () => signInWithGoogle(context),
                       verticalPadding: height * 0.02,
                       backgroundColor: AppColors.yellow,
                       child: Row(
@@ -331,6 +329,39 @@ class _LoginScreenState extends State<LoginScreen> {
             message: e.toString(),
             title: 'Error',posActionName: 'OK');
         print(e.toString());
+      }
+    }
+  }
+
+  Future<void> signInWithGoogle(BuildContext context) async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      await googleSignIn.initialize();
+
+      final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
+
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if (context.mounted) {
+        Navigator.of(context).pushReplacementNamed(AppRoutes.bottom_bar);
+      }
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Google sign-in failed: ${e.message}')),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Something went wrong: $e')),
+        );
       }
     }
   }
