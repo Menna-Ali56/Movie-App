@@ -12,7 +12,9 @@ class ApiMovieDetails {
 
       MovieDetailsModel details = MovieDetailsModel.fromJson(response.data);
       return details;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print("API ERROR: $e");
+      print("STACK TRACE: $stackTrace");
       throw Exception(e);
     }
   }

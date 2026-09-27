@@ -25,7 +25,7 @@ class SearchTab extends StatelessWidget {
                     decoration: InputDecoration(
                       prefixIcon: Padding(
                         padding: const EdgeInsets.only(
-                            top: 17, left: 10, bottom: 17),
+                            top: 10, left: 10, bottom: 10),
                         child: Image.asset(AppAssets.searchTab),
                       ),
                       fillColor: AppColors.darkGray,

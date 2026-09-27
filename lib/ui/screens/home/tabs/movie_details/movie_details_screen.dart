@@ -1,29 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/models/movie_details_model.dart';
+import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/ui/screens/home/apis/api_movie_details.dart';
+import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
+import 'package:movie_app/ui/widgets/custom_elevated_button.dart';
+import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
+import 'package:movie_app/utils/app_styles.dart';
 
 class MovieDetailsScreen extends StatefulWidget {
-  const MovieDetailsScreen({super.key});
+  final Movies movie;
+
+  const MovieDetailsScreen({super.key, required this.movie});
 
   @override
   State<MovieDetailsScreen> createState() => _MovieDetailsScreenState();
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
-  late Future movieDetails;
+  late Future<MovieDetailsModel> movieDetails;
   int index = 0;
+
   @override
   void initState() {
-    movieDetails = ApiMovieDetails.getDetails(10);
+    movieDetails = ApiMovieDetails.getDetails(widget.movie.id!);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Stack(
-        children: [
-          FutureBuilder(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppColors.transparentColor,
+        body: SingleChildScrollView(
+          child: FutureBuilder<MovieDetailsModel>(
             future: movieDetails,
             builder: (context, snap) {
               if (snap.connectionState == ConnectionState.waiting) {
@@ -49,13 +59,244 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   ),
                 );
               }
-              return const Column(
-                children: [],
+              final movie = snap.data!;
+              return Column(
+                children: [
+                  Container(
+                    height: 560,
+                    width: MediaQuery.of(context).size.width * 1,
+                    child: Stack(
+                      children: [
+                        Image.network(movie.data?.movie?.largeCoverImage ?? ""),
+                        Container(
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppColors.black2.withValues(alpha: 0.20),
+                              AppColors.black2,
+                            ],
+                          )),
+                        ),
+                        Center(child: Image.asset(AppAssets.play)),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, top: 10, right: 20),
+                          child: Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                              Spacer(),
+                              Image.asset(AppAssets.save)
+                            ],
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Center(
+                              child: Text(
+                                movie.data?.movie?.titleEnglish ?? "",
+                                style: AppStyles.medium36White,
+                              ),
+                            ),
+                            Text(
+                              (movie.data?.movie?.year ?? "").toString(),
+                              style: AppStyles.regular20Gray,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CustomElevatedButton(
+                              backgroundColor: AppColors.red,
+                              verticalPadding: 10,
+                              onPressed: () {},
+                              child: Text(
+                                'Watch',
+                                style: AppStyles.regular20White,
+                              )),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, right: 12),
+                        child: CustomElevatedButton(
+                            backgroundColor: AppColors.darkGray,
+                            verticalPadding: 10,
+                            horizontalPadding: 10,
+                            onPressed: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Image.asset(AppAssets.favorite),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  (movie.data?.movie?.likeCount ?? "")
+                                      .toString(),
+                                  style: AppStyles.regular20White,
+                                ),
+                              ],
+                            )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, right: 12),
+                        child: CustomElevatedButton(
+                            backgroundColor: AppColors.darkGray,
+                            verticalPadding: 10,
+                            horizontalPadding: 15,
+                            onPressed: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Image.asset(AppAssets.time),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Text(
+                                  (movie.data?.movie?.runtime ?? "").toString(),
+                                  style: AppStyles.regular20White,
+                                ),
+                              ],
+                            )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, right: 12),
+                        child: CustomElevatedButton(
+                            backgroundColor: AppColors.darkGray,
+                            verticalPadding: 10,
+                            horizontalPadding: 10,
+                            onPressed: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Image.asset(AppAssets.star2),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  (movie.data?.movie?.rating ?? "").toString(),
+                                  style: AppStyles.regular20White,
+                                ),
+                              ],
+                            )),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: 8, left: 8, top: 8, bottom: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Screen Shots",
+                          style: AppStyles.bold24White,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 200,
+                    width: double.infinity,
+                    margin: EdgeInsets.only(
+                      right: 10,
+                      left: 10,
+                    ),
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Image.network(
+                      movie.data?.movie?.backgroundImage ?? "",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: 8, left: 8, top: 8, bottom: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Similar ",
+                          style: AppStyles.bold24White,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: 8, left: 8, top: 8, bottom: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Summary ",
+                          style: AppStyles.bold24White,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(right: 8, left: 8, bottom: 5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          movie.data?.movie?.descriptionIntro ?? "",
+                          style: AppStyles.regular16White,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(right: 8, left: 8, bottom: 5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          movie.data?.movie?.genres!.join("|") ?? "",
+                          style: AppStyles.regular16White,
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               );
             },
-          )
-        ],
-      )
-    ]);
+          ),
+        ),
+      ),
+    );
   }
 }

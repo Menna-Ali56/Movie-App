@@ -42,7 +42,6 @@ class MyApp extends StatelessWidget {
         AppRoutes.bottom_bar: (context) => const BottomBar(),
         AppRoutes.update_profile: (context) => const UpdateProfile(),
         AppRoutes.profile_tab: (context) => const ProfileTab(),
-        AppRoutes.movie_details_screen: (context) => const MovieDetailsScreen(),
       },
     );
   }

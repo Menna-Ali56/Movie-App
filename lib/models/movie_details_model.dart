@@ -33,7 +33,7 @@ class Movie {
   String? titleLong;
   String? slug;
   int? year;
-  int? rating;
+  double? rating;
   int? runtime;
   List<String>? genres;
   int? likeCount;
@@ -51,32 +51,33 @@ class Movie {
   String? dateUploaded;
   int? dateUploadedUnix;
 
-  Movie(
-      {this.id,
-      this.url,
-      this.imdbCode,
-      this.title,
-      this.titleEnglish,
-      this.titleLong,
-      this.slug,
-      this.year,
-      this.rating,
-      this.runtime,
-      this.genres,
-      this.likeCount,
-      this.descriptionIntro,
-      this.descriptionFull,
-      this.ytTrailerCode,
-      this.language,
-      this.mpaRating,
-      this.backgroundImage,
-      this.backgroundImageOriginal,
-      this.smallCoverImage,
-      this.mediumCoverImage,
-      this.largeCoverImage,
-      this.torrents,
-      this.dateUploaded,
-      this.dateUploadedUnix});
+  Movie({
+    this.id,
+    this.url,
+    this.imdbCode,
+    this.title,
+    this.titleEnglish,
+    this.titleLong,
+    this.slug,
+    this.year,
+    this.rating,
+    this.runtime,
+    this.genres,
+    this.likeCount,
+    this.descriptionIntro,
+    this.descriptionFull,
+    this.ytTrailerCode,
+    this.language,
+    this.mpaRating,
+    this.backgroundImage,
+    this.backgroundImageOriginal,
+    this.smallCoverImage,
+    this.mediumCoverImage,
+    this.largeCoverImage,
+    this.torrents,
+    this.dateUploaded,
+    this.dateUploadedUnix,
+  });
 
   Movie.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -87,7 +88,7 @@ class Movie {
     titleLong = json['title_long'];
     slug = json['slug'];
     year = json['year'];
-    rating = json['rating'];
+    rating = (json['rating'] as num?)?.toDouble();
     runtime = json['runtime'];
     genres = json['genres'].cast<String>();
     likeCount = json['like_count'];

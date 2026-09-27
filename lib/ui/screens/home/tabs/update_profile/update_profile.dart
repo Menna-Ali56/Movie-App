@@ -123,7 +123,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 decoration: InputDecoration(
                   fillColor: AppColors.darkGray,
                   filled: true,
-                  prefixIcon: Image.asset(AppAssets.User),
+                  prefixIcon: Image.asset(AppAssets.user),
                   hintText: 'John Safwat',
                   hintStyle: AppStyles.roboto20White500,
                   contentPadding:
