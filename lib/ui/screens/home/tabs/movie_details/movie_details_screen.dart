@@ -26,7 +26,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
             future: movieDetails,
             builder: (context, snap) {
               if (snap.connectionState == ConnectionState.waiting) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(
                     color: AppColors.yellow,
                   ),
@@ -48,7 +48,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   ),
                 );
               }
-              return Column(
+              return const Column(
                 children: [],
               );
             },
