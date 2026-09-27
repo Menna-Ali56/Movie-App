@@ -1,13 +1,8 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/movie_model.dart';
-import 'package:movie_app/ui/screens/home/apis/api_movie.dart';
-import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
 import 'package:movie_app/ui/widgets/custom_future_builder.dart';
 import 'package:movie_app/utils/app_assets.dart';
-import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
-import 'package:movie_app/utils/size_utils.dart';
 
 import '../../../../../utils/app_colors.dart';
 

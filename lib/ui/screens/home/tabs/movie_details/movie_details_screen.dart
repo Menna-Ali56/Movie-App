@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/models/movie_details_model.dart';
 import 'package:movie_app/ui/screens/home/apis/api_movie_details.dart';
 import 'package:movie_app/utils/app_colors.dart';
 
@@ -13,8 +12,10 @@ class MovieDetailsScreen extends StatefulWidget {
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   late Future movieDetails;
   int index = 0;
-  initState() {
+  @override
+  void initState() {
     movieDetails = ApiMovieDetails.getDetails(10);
+    super.initState();
   }
 
   @override
