@@ -3,7 +3,6 @@ import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/ui/screens/home/tabs/movie_details/movie_details_screen.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
-import 'package:movie_app/utils/app_routes.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard({
