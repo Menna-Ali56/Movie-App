@@ -58,7 +58,7 @@ class _CastCartState extends State<CastCart> {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
-                  mainAxisExtent: 100,
+                  mainAxisExtent: 90,
                   crossAxisSpacing: 5,
                   mainAxisSpacing: 10),
               itemCount: cast.length,
@@ -97,35 +97,25 @@ class _CastCartState extends State<CastCart> {
                       SizedBox(
                         width: 10,
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Name : ',
-                                style: AppStyles.regular14White,
-                              ),
-                              Text(
-                                actor.name ?? '',
-                                style: AppStyles.regular14White,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                'Character : ',
-                                style: AppStyles.regular14White,
-                              ),
-                              Text(
-                                actor.characterName ?? ' ',
-                                style: AppStyles.regular14White,
-                              ),
-                            ],
-                          ),
-                        ],
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Name : ${actor.name ?? ''}',
+                              style: AppStyles.regular14White,
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              'Character : ${actor.characterName ?? ''}',
+                              style: AppStyles.regular14White,
+                              softWrap: true,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

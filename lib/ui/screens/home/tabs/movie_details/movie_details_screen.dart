@@ -216,8 +216,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     height: 5,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        right: 8, left: 8, top: 8, bottom: 5),
+                    padding:
+                        const EdgeInsets.only(left: 10, top: 15, bottom: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -245,8 +245,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        right: 8, left: 8, top: 8, bottom: 5),
+                    padding:
+                        const EdgeInsets.only(left: 10, top: 15, bottom: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -259,7 +259,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
-                        right: 8, left: 8, top: 8, bottom: 5),
+                        right: 12, left: 12, top: 10, bottom: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -270,28 +270,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        right: 8, left: 8, top: 8, bottom: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Cast",
-                          style: AppStyles.bold24White,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        right: 8, left: 8, top: 8, bottom: 5),
-                    child: CastCart(
-                      movie: widget.movie,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        right: 8, left: 8, top: 8, bottom: 5),
+                    padding:
+                        const EdgeInsets.only(left: 10, top: 10, bottom: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -304,7 +284,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(right: 8, left: 8, bottom: 5),
+                        const EdgeInsets.only(right: 12, left: 12, bottom: 5),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -316,8 +296,28 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     ),
                   ),
                   Padding(
+                    padding:
+                        const EdgeInsets.only(left: 10, top: 10, bottom: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Cast",
+                          style: AppStyles.bold24White,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
                     padding: const EdgeInsets.only(
-                        right: 8, left: 8, top: 8, bottom: 5),
+                        right: 10, left: 10, top: 10, bottom: 5),
+                    child: CastCart(
+                      movie: widget.movie,
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 10, top: 10, bottom: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -330,7 +330,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
-                        right: 8, left: 8, top: 4, bottom: 5),
+                        right: 12, left: 12, top: 5, bottom: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
