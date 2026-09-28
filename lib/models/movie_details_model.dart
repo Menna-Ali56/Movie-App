@@ -50,6 +50,7 @@ class Movie {
   List<Torrents>? torrents;
   String? dateUploaded;
   int? dateUploadedUnix;
+  List<Cast>? cast;
 
   Movie({
     this.id,
@@ -77,6 +78,7 @@ class Movie {
     this.torrents,
     this.dateUploaded,
     this.dateUploadedUnix,
+    this.cast,
   });
 
   Movie.fromJson(Map<String, dynamic> json) {
@@ -90,7 +92,7 @@ class Movie {
     year = json['year'];
     rating = (json['rating'] as num?)?.toDouble();
     runtime = json['runtime'];
-    genres = json['genres'].cast<String>();
+    genres = json['genres'] != null ? List<String>.from(json['genres']) : [];
     likeCount = json['like_count'];
     descriptionIntro = json['description_intro'];
     descriptionFull = json['description_full'];
@@ -110,6 +112,13 @@ class Movie {
     }
     dateUploaded = json['date_uploaded'];
     dateUploadedUnix = json['date_uploaded_unix'];
+    if (json['cast'] != null) {
+      cast = <Cast>[];
+
+      json['cast'].forEach((v) {
+        cast!.add(Cast.fromJson(v));
+      });
+    }
   }
 }
 
@@ -160,6 +169,27 @@ class Torrents {
     sizeBytes = json['size_bytes'];
     dateUploaded = json['date_uploaded'];
     dateUploadedUnix = json['date_uploaded_unix'];
+  }
+}
+
+class Cast {
+  String? name;
+  String? characterName;
+  String? urlSmallImage;
+  String? imdbCode;
+
+  Cast({
+    this.name,
+    this.characterName,
+    this.urlSmallImage,
+    this.imdbCode,
+  });
+
+  Cast.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    characterName = json['character_name'];
+    urlSmallImage = json['url_small_image'];
+    imdbCode = json['imdb_code'];
   }
 }
 

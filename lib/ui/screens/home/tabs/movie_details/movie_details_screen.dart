@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/models/movie_details_model.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/ui/screens/home/apis/api_movie_details.dart';
-import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
+import 'package:movie_app/ui/screens/home/tabs/movie_details/movie_similer.dart';
+import 'package:movie_app/ui/screens/home/widgets/cast_cart.dart';
 import 'package:movie_app/ui/widgets/custom_elevated_button.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
@@ -23,7 +24,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   @override
   void initState() {
-    movieDetails = ApiMovieDetails.getDetails(widget.movie.id!);
+    movieDetails = ApiMovieDetails.getDetails(widget.movie.id!, true);
     super.initState();
   }
 
@@ -99,20 +100,24 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                             ],
                           ),
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Center(
-                              child: Text(
-                                movie.data?.movie?.titleEnglish ?? "",
-                                style: AppStyles.medium36White,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: Text(
+                                  movie.data?.movie?.titleEnglish ?? "",
+                                  style: AppStyles.medium36White,
+                                ),
                               ),
-                            ),
-                            Text(
-                              (movie.data?.movie?.year ?? "").toString(),
-                              style: AppStyles.regular20Gray,
-                            ),
-                          ],
+                              Text(
+                                (movie.data?.movie?.year ?? "").toString(),
+                                style: AppStyles.regular20Gray,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -258,6 +263,38 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        MovieSimiler(
+                          movieId: widget.movie.id!,
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: 8, left: 8, top: 8, bottom: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Cast",
+                          style: AppStyles.bold24White,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: 8, left: 8, top: 8, bottom: 5),
+                    child: CastCart(
+                      movie: widget.movie,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: 8, left: 8, top: 8, bottom: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
                         Text(
                           "Summary ",
                           style: AppStyles.bold24White,
@@ -279,14 +316,46 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(right: 8, left: 8, bottom: 5),
-                    child: Column(
+                    padding: const EdgeInsets.only(
+                        right: 8, left: 8, top: 8, bottom: 5),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          movie.data?.movie?.genres!.join("|") ?? "",
-                          style: AppStyles.regular16White,
+                          "Genres",
+                          style: AppStyles.bold24White,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: 8, left: 8, top: 4, bottom: 5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children:
+                                (movie.data?.movie?.genres! ?? []).map((genre) {
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 12),
+                                decoration: BoxDecoration(
+                                  color:
+                                      AppColors.darkGray.withValues(alpha: .75),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  genre,
+                                  style: AppStyles.regular16White,
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ],
                     ),
