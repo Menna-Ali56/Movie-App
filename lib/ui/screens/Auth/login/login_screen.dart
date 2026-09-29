@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/size_utils.dart';
+import 'package:provider/provider.dart';
+import '../../../../provider/user_provider.dart';
 import '../../../../utils/app_assets.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_styles.dart';
 import '../../../../utils/dialog_utils.dart';
+import '../../../../utils/firebase_utils.dart';
 import '../../../widgets/custom_elevated_button.dart';
 import '../../../widgets/custom_text_field.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -290,44 +293,180 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // void login()async{
+  //   if (formKey.currentState!.validate()==true) {
+  //     try {
+  //       //todo: 1-show loadding
+  //       DialogUtils.showLoading(context: context, loadingText: 'Loading....');
+  //       //todo :2- login FireBase Auth
+  //       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //         email: emailController.text,
+  //         password: passwordController.text,
+  //       );
+  //       //todo:3-read User from FireBase
+  //       var user = await FireBaseUtils.readUserFromFireStore(credential.user?.uid??'');
+  //       if (user == null){
+  //         return;
+  //       }
+  //       //todo :4- save user in provider
+  //       var userProviser=Provider.of<UserProvider>(context,listen: false);
+  //       userProviser.updateUser(user);
+  //
+  //
+  //       //todo:5- hide loading
+  //       DialogUtils.hideLoadong(context: context);
+  //
+  //       // todo: 6-show message
+  //       DialogUtils.showMessage(context: context,
+  //           message: 'Login Successfully.',
+  //           title: 'Success',posActionName: 'OK',posAction: (){
+  //             Navigator.of(context).pushNamed(AppRoutes.bottom_bar);
+  //           });
+  //
+  //
+  //     } on FirebaseAuthException catch (e) {
+  //
+  //       if (e.code == 'invalid-credential') {
+  //         //todo: hide loading
+  //         DialogUtils.hideLoadong(context: context);
+  //         // todo: show message>> error
+  //         DialogUtils.showMessage(context: context,
+  //             message: 'The Supplied auth Credential is in correct',
+  //             title: 'Error',posActionName: 'OK');
+  //       }
+  //     }catch(e){
+  //       //todo: hide loading
+  //       DialogUtils.hideLoadong(context: context);
+  //       // todo: show message>> error
+  //       DialogUtils.showMessage(context: context,
+  //           message: e.toString(),
+  //           title: 'Error',posActionName: 'OK');
+  //       print(e.toString());
+  //     }
+  //   }
+  // }
   void login()async{
     if (formKey.currentState!.validate()==true) {
       try {
-        //todo: show loadding
+        //todo: 1-show loadding
         DialogUtils.showLoading(context: context, loadingText: 'Loading....');
+
+        //todo :2- login FireBase Auth
         final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text,
+          email: emailController.text.trim(),
           password: passwordController.text,
         );
 
-        //todo: hide loading
+        //todo:3-read User from FireBase
+        var user = await FireBaseUtils.readUserFromFireStore(
+          credential.user?.uid ?? '',
+        );
+
+        if (user == null){
+          DialogUtils.hideLoadong(context: context);
+
+          DialogUtils.showMessage(
+            context: context,
+            message: 'User data not found in Firestore.',
+            title: 'Error',
+            posActionName: 'OK',
+          );
+
+          return;
+        }
+
+        //todo :4- save user in provider
+        var userProviser=Provider.of<UserProvider>(
+          context,
+          listen: false,
+        );
+
+        userProviser.updateUser(user);
+
+        //todo:5- hide loading
         DialogUtils.hideLoadong(context: context);
 
-        // todo: show message
-        DialogUtils.showMessage(context: context,
-            message: 'Login Successfully.',
-            title: 'Success',posActionName: 'OK',posAction: (){
-              Navigator.of(context).pushNamed(AppRoutes.bottom_bar);
-            });
-
+        // todo: 6-show message
+        DialogUtils.showMessage(
+          context: context,
+          message: 'Login Successfully.',
+          title: 'Success',
+          posActionName: 'OK',
+          posAction: (){
+            Navigator.of(context).pushNamed(
+              AppRoutes.bottom_bar,
+            );
+          },
+        );
 
       } on FirebaseAuthException catch (e) {
 
-        if (e.code == 'invalid-credential') {
-          //todo: hide loading
-          DialogUtils.hideLoadong(context: context);
-          // todo: show message>> error
-          DialogUtils.showMessage(context: context,
-              message: 'The Supplied auth Credential is in correct',
-              title: 'Error',posActionName: 'OK');
-        }
-      }catch(e){
         //todo: hide loading
         DialogUtils.hideLoadong(context: context);
+
+        print('Firebase Auth Error Code: ${e.code}');
+        print('Firebase Auth Error Message: ${e.message}');
+
+        if (e.code == 'invalid-credential') {
+
+          // todo: show message>> error
+          DialogUtils.showMessage(
+            context: context,
+            message: 'The email or password is incorrect.',
+            title: 'Error',
+            posActionName: 'OK',
+          );
+
+        } else if (e.code == 'user-not-found') {
+
+          DialogUtils.showMessage(
+            context: context,
+            message: 'No account found with this email.',
+            title: 'Error',
+            posActionName: 'OK',
+          );
+
+        } else if (e.code == 'wrong-password') {
+
+          DialogUtils.showMessage(
+            context: context,
+            message: 'The password is incorrect.',
+            title: 'Error',
+            posActionName: 'OK',
+          );
+
+        } else if (e.code == 'invalid-email') {
+
+          DialogUtils.showMessage(
+            context: context,
+            message: 'The email address is invalid.',
+            title: 'Error',
+            posActionName: 'OK',
+          );
+
+        } else {
+
+          DialogUtils.showMessage(
+            context: context,
+            message: e.message ?? 'Something went wrong.',
+            title: 'Error',
+            posActionName: 'OK',
+          );
+        }
+
+      }catch(e){
+
+        //todo: hide loading
+        DialogUtils.hideLoadong(context: context);
+
         // todo: show message>> error
-        DialogUtils.showMessage(context: context,
-            message: e.toString(),
-            title: 'Error',posActionName: 'OK');
+        DialogUtils.showMessage(
+          context: context,
+          message: e.toString(),
+          title: 'Error',
+          posActionName: 'OK',
+        );
+
         print(e.toString());
       }
     }

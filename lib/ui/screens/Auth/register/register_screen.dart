@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/size_utils.dart';
+import 'package:provider/provider.dart';
+import '../../../../models/my_user.dart';
+import '../../../../provider/user_provider.dart';
 import '../../../../utils/app_assets.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_styles.dart';
 import '../../../../utils/dialog_utils.dart';
+import '../../../../utils/firebase_utils.dart';
 import '../../../widgets/custom_elevated_button.dart';
 import '../../../widgets/custom_text_field.dart';
 
@@ -364,17 +368,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void register()async{
     if (formKey.currentState!.validate()==true) {
       try {
-        //todo: show loadding
+        //todo: 1-show loadding
         DialogUtils.showLoading(context: context, loadingText: 'Loading....');
+        //todo:2-FireBase Auth
         final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
         );
-        //todo: hide loading
+        MyUser myUser=MyUser(id: credential.user?.uid ?? '', name: nameController.text, email: emailController.text,phone: phoneController.text);
+        //todo:3- Save user in fireStore
+        await FireBaseUtils.addUserInFireStore(myUser);
+        //todo:4- Save user in provider
+        var userProvider=Provider.of<UserProvider>(context,listen: false);
+        userProvider.updateUser(myUser);
+
+        //todo: 5-hide loading
         DialogUtils.hideLoadong(context: context);
 
 
-        // todo: show message
+        // todo: 6-show message
         DialogUtils.showMessage(context: context,
             message: 'Register Successfully.',
             title: 'Success',posActionName: 'OK',posAction: (){
