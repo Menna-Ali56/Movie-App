@@ -7,13 +7,27 @@ import 'package:movie_app/utils/app_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../provider/user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/utils/firebase_utils.dart';
 
-class ProfileTab extends StatelessWidget {
+import '../widgets/movie_card.dart';
+class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
 
   @override
+  State<ProfileTab> createState() => _ProfileTabState();
+}
+
+class _ProfileTabState extends State<ProfileTab> {
+  Future<List<Movies>>? historyFuture;
+  @override
   Widget build(BuildContext context) {
     var userProvider=Provider.of<UserProvider>(context);
+    final user = FirebaseAuth.instance.currentUser;
+    historyFuture ??= user == null
+        ? null
+        : FireBaseUtils.getHistory(user.uid);
     return SafeArea(
       child: DefaultTabController(
         length: 2,
@@ -68,9 +82,16 @@ class ProfileTab extends StatelessWidget {
                             ),
                             Column(
                               children: [
-                                Text(
-                                  "10",
-                                  style: AppStyles.bold24White,
+                                FutureBuilder<List<Movies>>(
+                                  future: historyFuture,
+                                  builder: (context, snapshot) {
+                                    final historyCount = snapshot.data?.length ?? 0;
+
+                                    return Text(
+                                      historyCount.toString(),
+                                      style: AppStyles.bold24White,
+                                    );
+                                  },
                                 ),
                                 const SizedBox(
                                   height: 10,
@@ -171,10 +192,61 @@ class ProfileTab extends StatelessWidget {
                   child: Image.asset(AppAssets.emtySearch),
                 ),
               ),
+
               Container(
                 color: AppColors.black2,
-                child: Center(
-                  child: Image.asset(AppAssets.emtySearch),
+                child: user == null
+                    ? Center(
+                  child: Text(
+                    "Please login first",
+                    style: AppStyles.regular16White,
+                  ),
+                )
+                    : FutureBuilder<List<Movies>>(
+                  future: FireBaseUtils.getHistory(user.uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.yellow,
+                        ),
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          "Something went wrong",
+                          style: AppStyles.regular16White,
+                        ),
+                      );
+                    }
+
+                    final history = snapshot.data ?? [];
+
+                    if (history.isEmpty) {
+                      return Center(
+                        child: Image.asset(AppAssets.emtySearch),
+                      );
+                    }
+
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(10),
+                      gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.7,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                      ),
+                      itemCount: history.length,
+                      itemBuilder: (context, index) {
+                        return MovieCard(
+                          movie: history[index],
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ]),

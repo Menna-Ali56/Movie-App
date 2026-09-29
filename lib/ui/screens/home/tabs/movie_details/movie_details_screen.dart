@@ -12,7 +12,8 @@ import 'package:movie_app/ui/widgets/custom_elevated_button.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_styles.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:movie_app/utils/firebase_utils.dart';
 class MovieDetailsScreen extends StatefulWidget {
   final Movies movie;
 
@@ -27,10 +28,23 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   @override
   void initState() {
-    movieDetails = ApiMovieDetails.getDetails(widget.movie.id!, true);
     super.initState();
-  }
+    movieDetails = ApiMovieDetails.getDetails(widget.movie.id!, true);
+    _addToHistory();
 
+  }
+  Future<void> _addToHistory() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return;
+    }
+
+    await FireBaseUtils.addMovieToHistory(
+      userId: user.uid,
+      movie: widget.movie,
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
