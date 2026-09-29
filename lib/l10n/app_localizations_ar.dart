@@ -85,4 +85,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get create_account => 'إنشاء حساب';
+
+  @override
+  String get watch => 'مشاهدة';
+
+  @override
+  String get screen_shots => 'لقطات الشاشة';
+
+  @override
+  String get similar => 'أفلام مشابهة';
+
+  @override
+  String get summary => 'الملخص';
+
+  @override
+  String get cast => 'طاقم التمثيل';
+
+  @override
+  String get genres => 'الأنواع';
 }

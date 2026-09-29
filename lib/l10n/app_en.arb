@@ -25,5 +25,11 @@
  "update_data": "Update Data",
  "phone_number": "Phone Number",
  "create_account": "Create Account",
+ "watch": "Watch",
+ "screen_shots": "Screen Shots",
+ "similar": "Similar",
+ "summary": "Summary",
+ "cast": "Cast",
+ "genres": "Genres"
 
 }

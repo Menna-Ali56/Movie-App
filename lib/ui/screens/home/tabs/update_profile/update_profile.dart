@@ -7,6 +7,7 @@ import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
 import 'package:movie_app/models/my_user.dart';
+import 'package:movie_app/utils/size_utils.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 class UpdateProfile extends StatefulWidget {
@@ -24,7 +25,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   // Default avatar
   String selectedAvatar = AppAssets.avatar_1;
 
-  // Loading
+
   bool isLoading = false;
 
   @override
@@ -183,7 +184,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    // تأكيد قبل الحذف
+
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -260,6 +261,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
   @override
   Widget build(BuildContext context) {
+    var width = context.width;
+    var height = context.height;
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -288,15 +291,15 @@ class _UpdateProfileState extends State<UpdateProfile> {
             style: AppStyles.regular14Yellow,
           ),
         ),
-        actions: const [
+        actions:  [
           SizedBox(
-            width: 50,
+            width: width*0.1,
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(
-          top: 30,
+        padding:  EdgeInsets.only(
+          top: width*0.1,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,8 +311,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
               onTap: chooseAvatar,
               child: Center(
                 child: SizedBox(
-                  height: 150,
-                  width: 150,
+                  height: height*0.2,
+                  width: width*0.4,
                   child: Image.asset(
                     selectedAvatar,
                     fit: BoxFit.contain,
@@ -320,10 +323,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
             // Name
             Padding(
-              padding: const EdgeInsets.only(
-                top: 40,
-                right: 10,
-                left: 10,
+              padding:  EdgeInsets.only(
+                top: height*0.04,
+                right: width*0.02,
+                left: width*0.02,
               ),
               child: TextField(
                 controller: nameController,
@@ -335,11 +338,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   fillColor: AppColors.darkGray,
                   filled: true,
                   prefixIcon: Image.asset(AppAssets.user),
-                  hintText: 'John Safwat',
+                  hintText: localizations.name,
                   hintStyle: AppStyles.roboto20White500,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 10,
+                  contentPadding:  EdgeInsets.symmetric(
+                    vertical: height*0.02,
+                    horizontal: width*0.04,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
@@ -361,10 +364,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
             // Phone
             Padding(
-              padding: const EdgeInsets.only(
-                top: 15,
-                right: 10,
-                left: 10,
+              padding:  EdgeInsets.only(
+                top: height*0.04,
+                right: width*0.02,
+                left: width*0.02,
               ),
               child: TextField(
                 controller: phoneController,
@@ -383,9 +386,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   hintStyle: const TextStyle(
                     color: AppColors.white,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 10,
+                  contentPadding:  EdgeInsets.symmetric(
+                    vertical: height*0.02,
+                    horizontal: width*0.02,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
@@ -410,11 +413,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(
-                      top: 30,
-                      right: 10,
-                      left: 10,
-                      bottom: 15,
+                    padding:  EdgeInsets.only(
+                      top: height*0.03,
+                      right: width*0.02,
+                      left: width*0.02,
+                      bottom: height*0.04,
                     ),
                     child: Text(
                       localizations.reset_password,
@@ -427,8 +430,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
             // Delete Account
             Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 10,
+              margin:  EdgeInsets.symmetric(
+                horizontal: width*0.02,
               ),
               child: Center(
                 child: Row(
@@ -472,9 +475,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         onPressed: isLoading ? null
                             : updateProfile,
                         child: isLoading
-                            ? const SizedBox(
-                          height: 24,
-                          width: 24,
+                            ?  SizedBox(
+                          height: height*0.04,
+                          width: width*0.02,
                           child: CircularProgressIndicator(
                             color: AppColors.darkGray,
                             strokeWidth: 2,
@@ -491,8 +494,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
               ),
             ),
 
-            const SizedBox(
-              height: 15,
+             SizedBox(
+              height: height*0.04,
             ),
           ],
         ),
