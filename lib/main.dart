@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:movie_app/l10n/app_localizations.dart';
+import 'package:movie_app/provider/user_provider.dart';
 import 'package:movie_app/ui/screens/Auth/register/register_screen.dart';
 import 'package:movie_app/ui/screens/Auth/reset_password/reset_password.dart';
 import 'package:movie_app/ui/screens/home/tabs/movie_details/movie_details_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 
@@ -24,7 +26,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+      MultiProvider(providers: [
+
+        ChangeNotifierProvider(create: (BuildContext context) => UserProvider()),
+      ],
+      child:  MyApp()));
 }
 
 class MyApp extends StatelessWidget {

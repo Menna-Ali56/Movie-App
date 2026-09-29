@@ -4,12 +4,16 @@ import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../provider/user_provider.dart';
 
 class ProfileTab extends StatelessWidget {
   const ProfileTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var userProvider=Provider.of<UserProvider>(context);
     return SafeArea(
       child: DefaultTabController(
         length: 2,
@@ -38,7 +42,7 @@ class ProfileTab extends StatelessWidget {
                                   height: 15,
                                 ),
                                 Text(
-                                  "John Safwat",
+                                  userProvider.currentUser!.name,
                                   style: AppStyles.roboto20White500,
                                 )
                               ],
