@@ -7,6 +7,8 @@ import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
 import 'package:movie_app/models/my_user.dart';
+
+import '../../../../../l10n/app_localizations.dart';
 class UpdateProfile extends StatefulWidget {
   const UpdateProfile({super.key});
 
@@ -258,6 +260,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.transparentColor,
@@ -281,7 +284,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
         ),
         title: Center(
           child: Text(
-            "Pick Avatar",
+            localizations.pick_avatar,
             style: AppStyles.regular14Yellow,
           ),
         ),
@@ -414,7 +417,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                       bottom: 15,
                     ),
                     child: Text(
-                      "Reset Password",
+                      localizations.reset_password,
                       style: AppStyles.regular20White,
                     ),
                   ),
@@ -438,7 +441,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         onPressed:  isLoading ? null : deleteAccount,
 
                         child: Text(
-                          "Delete Account",
+                         localizations.delete_account,
                           style: AppStyles.regular20DarkGray,
                         ),
                       ),
@@ -478,7 +481,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                           ),
                         )
                             : Text(
-                          "Edit Profile",
+                          localizations.edit_profile,
                           style: AppStyles.regular20DarkGray,
                         ),
                       ),

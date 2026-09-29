@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/size_utils.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../bloc/language/language_bloc.dart';
+import '../../../../bloc/language/language_event.dart';
 import '../../../../models/my_user.dart';
 import '../../../../provider/user_provider.dart';
 import '../../../../utils/app_assets.dart';
@@ -15,7 +19,7 @@ import '../../../widgets/custom_elevated_button.dart';
 import '../../../widgets/custom_text_field.dart';
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({super.key});
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -24,22 +28,19 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   int selectedIndex = 1;
 
-  // Language
-  int selectedLanguage = 0;
-
   final List<String> avatars = [
     AppAssets.avatar_1,
     AppAssets.avatar_2,
     AppAssets.avatar_3,
   ];
 
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  var rePasswordController = TextEditingController();
-  var nameController = TextEditingController();
-  var phoneController = TextEditingController();
-  var formKey=GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final rePasswordController = TextEditingController();
+  final nameController = TextEditingController();
+  final phoneController = TextEditingController();
 
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +49,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     final localizations = AppLocalizations.of(context)!;
 
+    // Get current language from BLoC
+    final languageState = context.watch<LanguageBloc>().state;
+
+    final selectedLanguage =
+    languageState.languageCode == 'ar' ? 1 : 0;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(
+          iconTheme: const IconThemeData(
             color: AppColors.yellow,
           ),
           backgroundColor: AppColors.black,
@@ -73,6 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: height * 0.02,
                 children: [
+                  // ================= AVATARS =================
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: List.generate(
@@ -85,8 +93,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             setState(() {
                               selectedIndex = index;
                             });
-
-                            print('Selected Avatar: $index');
                           },
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
@@ -118,28 +124,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: height * 0.01,
                   ),
 
+                  // ================= NAME =================
                   CustomTextField(
                     controller: nameController,
-
                     validator: (text) {
                       if (text == null || text.trim().isEmpty) {
                         return 'Please Enter a name';
                       }
                       return null;
                     },
-
-
                     borderColor: AppColors.transparentColor,
                     filled: true,
                     fillColor: AppColors.darkGray,
                     hintText: localizations.name,
                     hintStyle: AppStyles.regular16White,
-                    prefixIcon: Icon(
+                    prefixIcon: const Icon(
                       Icons.perm_identity_outlined,
                       color: AppColors.white,
                     ),
                   ),
 
+                  // ================= EMAIL =================
                   CustomTextField(
                     controller: emailController,
                     KeyboardType: TextInputType.emailAddress,
@@ -147,23 +152,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       if (text == null || text.trim().isEmpty) {
                         return 'Please Enter an email';
                       }
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(emailController.text)) {
+
+                      if (!RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      ).hasMatch(emailController.text)) {
                         return 'Please enter a valid email address';
                       }
+
                       return null;
                     },
-
                     borderColor: AppColors.transparentColor,
                     filled: true,
                     fillColor: AppColors.darkGray,
                     hintText: localizations.email,
                     hintStyle: AppStyles.regular16White,
-                    prefixIcon: Icon(
+                    prefixIcon: const Icon(
                       Icons.email_rounded,
                       color: AppColors.white,
                     ),
                   ),
 
+                  // ================= PASSWORD =================
                   CustomTextField(
                     controller: passwordController,
                     obscureText: true,
@@ -171,9 +180,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       if (password == null || password.trim().isEmpty) {
                         return 'Please Enter a Password';
                       }
+
                       if (password.length < 6) {
                         return 'Password must be at least 6 characters long';
                       }
+
                       return null;
                     },
                     borderColor: AppColors.transparentColor,
@@ -181,16 +192,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     fillColor: AppColors.darkGray,
                     hintText: localizations.password,
                     hintStyle: AppStyles.regular16White,
-                    prefixIcon: Icon(
+                    prefixIcon: const Icon(
                       Icons.lock,
                       color: AppColors.white,
                     ),
-                    suffixIcon: Icon(
+                    suffixIcon: const Icon(
                       Icons.visibility_off_rounded,
                       color: AppColors.white,
                     ),
                   ),
 
+                  // ================= CONFIRM PASSWORD =================
                   CustomTextField(
                     controller: rePasswordController,
                     obscureText: true,
@@ -198,9 +210,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       if (rePassword == null || rePassword.trim().isEmpty) {
                         return 'Please Enter a Password';
                       }
-                      if (rePassword != passwordController.text ) {
+
+                      if (rePassword != passwordController.text) {
                         return "Re-Password doesn't match password.";
                       }
+
                       return null;
                     },
                     borderColor: AppColors.transparentColor,
@@ -208,16 +222,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     fillColor: AppColors.darkGray,
                     hintText: localizations.confirm_password,
                     hintStyle: AppStyles.regular16White,
-                    prefixIcon: Icon(
+                    prefixIcon: const Icon(
                       Icons.lock,
                       color: AppColors.white,
                     ),
-                    suffixIcon: Icon(
+                    suffixIcon: const Icon(
                       Icons.visibility_off_rounded,
                       color: AppColors.white,
                     ),
                   ),
 
+                  // ================= PHONE =================
                   CustomTextField(
                     controller: phoneController,
                     KeyboardType: TextInputType.phone,
@@ -226,7 +241,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         return 'Please Enter Your Phone Number';
                       }
 
-                      if (!RegExp(r'^(01)[0-2,5]{1}[0-9]{8}$').hasMatch(phone.trim())) {
+                      if (!RegExp(
+                        r'^(01)[0-2,5]{1}[0-9]{8}$',
+                      ).hasMatch(phone.trim())) {
                         return 'Please Enter a Valid Phone Number';
                       }
 
@@ -237,16 +254,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     fillColor: AppColors.darkGray,
                     hintText: localizations.phone_number,
                     hintStyle: AppStyles.regular16White,
-                    prefixIcon: Icon(
+                    prefixIcon: const Icon(
                       Icons.phone,
                       color: AppColors.white,
                     ),
                   ),
 
+                  // ================= REGISTER BUTTON =================
                   SizedBox(
                     width: double.infinity,
                     child: CustomElevatedButton(
-                      onPressed:register,
+                      onPressed: register,
                       verticalPadding: height * 0.01,
                       backgroundColor: AppColors.yellow,
                       child: Text(
@@ -256,6 +274,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
 
+                  // ================= LOGIN =================
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -270,23 +289,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             AppRoutes.login_screen,
                           );
                         },
-                        child: Align(
-                          alignment: AlignmentDirectional.center,
-                          child: Text(
-                            localizations.login,
-                            style: AppStyles.black14Yellow,
-                          ),
+                        child: Text(
+                          localizations.login,
+                          style: AppStyles.black14Yellow,
                         ),
                       ),
                     ],
                   ),
 
+                  // ================= LANGUAGE =================
                   Container(
                     width: 130,
                     height: 62,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 7,
-                    ),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: AppColors.yellow,
@@ -294,62 +309,81 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       borderRadius: BorderRadius.circular(35),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Stack(
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedLanguage = 0;
-                            });
-
-                            print("English Selected");
-
-                            // TODO: English onTap
-                          },
-                          child: Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: selectedLanguage == 0
-                                  ? AppColors.yellow
-                                  : AppColors.transparentColor,
-                              shape: BoxShape.circle,
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              '🇺🇸',
-                              style: TextStyle(
-                                fontSize: 30,
+                        // English flag
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () {
+                              context.read<LanguageBloc>().add(
+                                ChangeLanguageEvent('en'),
+                              );
+                            },
+                            child: const SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: Center(
+                                child: Text(
+                                  '🇺🇸',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
 
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedLanguage = 1;
-                            });
-
-                            print("Arabic Selected");
-
-                            // TODO: Arabic onTap
-                          },
-                          child: Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: selectedLanguage == 1
-                                  ? AppColors.yellow
-                                  : AppColors.transparentColor,
-                              shape: BoxShape.circle,
+                        // Arabic flag
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: () {
+                              context.read<LanguageBloc>().add(
+                                ChangeLanguageEvent('ar'),
+                              );
+                            },
+                            child: const SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: Center(
+                                child: Text(
+                                  '🇪🇬',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                  ),
+                                ),
+                              ),
                             ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              '🇪🇬',
-                              style: TextStyle(
-                                fontSize: 30,
+                          ),
+                        ),
+
+                        // Yellow circle
+                        AnimatedAlign(
+                          duration: const Duration(
+                            milliseconds: 250,
+                          ),
+                          curve: Curves.easeInOut,
+                          alignment: selectedLanguage == 0
+                              ? Alignment.centerLeft
+                              : Alignment.centerRight,
+                          child: IgnorePointer(
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              decoration: const BoxDecoration(
+                                color: AppColors.yellow,
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                selectedLanguage == 0
+                                    ? '🇺🇸'
+                                    : '🇪🇬',
+                                style: const TextStyle(
+                                  fontSize: 30,
+                                ),
                               ),
                             ),
                           ),
@@ -365,65 +399,91 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-  void register()async{
-    if (formKey.currentState!.validate()==true) {
+
+  // ================= REGISTER =================
+
+  Future<void> register() async {
+    if (formKey.currentState!.validate() == true) {
       try {
-        //todo: 1-show loadding
-        DialogUtils.showLoading(context: context, loadingText: 'Loading....');
-        //todo:2-FireBase Auth
-        final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        DialogUtils.showLoading(
+          context: context,
+          loadingText: 'Loading....',
+        );
+
+        // Firebase Auth
+        final credential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
         );
-        MyUser myUser=MyUser(id: credential.user?.uid ?? '', name: nameController.text, email: emailController.text,phone: phoneController.text);
-        //todo:3- Save user in fireStore
+
+        // Create User Model
+        MyUser myUser = MyUser(
+          id: credential.user?.uid ?? '',
+          name: nameController.text,
+          email: emailController.text,
+          phone: phoneController.text,
+        );
+
+        // Save User in Firestore
         await FireBaseUtils.addUserInFireStore(myUser);
-        //todo:4- Save user in provider
-        var userProvider=Provider.of<UserProvider>(context,listen: false);
+
+        // Save User in Provider
+        var userProvider = Provider.of<UserProvider>(
+          context,
+          listen: false,
+        );
+
         userProvider.updateUser(myUser);
 
-        //todo: 5-hide loading
         DialogUtils.hideLoadong(context: context);
 
-
-        // todo: 6-show message
-        DialogUtils.showMessage(context: context,
-            message: 'Register Successfully.',
-            title: 'Success',posActionName: 'OK',posAction: (){
-              Navigator.of(context).pushNamed(AppRoutes.bottom_bar);
-            });
-
+        DialogUtils.showMessage(
+          context: context,
+          message: 'Register Successfully.',
+          title: 'Success',
+          posActionName: 'OK',
+          posAction: () {
+            Navigator.of(context).pushNamed(
+              AppRoutes.bottom_bar,
+            );
+          },
+        );
       } on FirebaseAuthException catch (e) {
+        DialogUtils.hideLoadong(context: context);
+
         if (e.code == 'weak-password') {
-          //todo: hide loading
-          DialogUtils.hideLoadong(context: context);
-          // todo: show message>> error
-          DialogUtils.showMessage(context: context,
-              message: 'The Password provoded is too weak',
-              title: 'Error',posActionName: 'OK');
-
-
+          DialogUtils.showMessage(
+            context: context,
+            message: 'The Password provided is too weak',
+            title: 'Error',
+            posActionName: 'OK',
+          );
         } else if (e.code == 'email-already-in-use') {
-
-          //todo: hide loading
-          DialogUtils.hideLoadong(context: context);
-          // todo: show message>> error
-          DialogUtils.showMessage(context: context,
-              message:'The account already exists for that email.' ,
-              title: 'Error',posActionName: 'OK');
-
-
+          DialogUtils.showMessage(
+            context: context,
+            message: 'The account already exists for that email.',
+            title: 'Error',
+            posActionName: 'OK',
+          );
+        } else {
+          DialogUtils.showMessage(
+            context: context,
+            message: e.message ?? 'Something went wrong',
+            title: 'Error',
+            posActionName: 'OK',
+          );
         }
       } catch (e) {
-        //todo: hide loading
         DialogUtils.hideLoadong(context: context);
-        // todo: show message>> error
-        DialogUtils.showMessage(context: context,
-            message: e.toString(),
-            title: 'Error',posActionName: 'OK');
 
+        DialogUtils.showMessage(
+          context: context,
+          message: e.toString(),
+          title: 'Error',
+          posActionName: 'OK',
+        );
       }
-
     }
   }
 }

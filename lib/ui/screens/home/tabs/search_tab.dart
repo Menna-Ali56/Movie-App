@@ -7,6 +7,7 @@ import 'package:movie_app/utils/size_utils.dart';
 import '../../../../bloc/search/search_bloc.dart';
 import '../../../../bloc/search/search_event.dart';
 import '../../../../bloc/search/search_state.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../widgets/movie_card.dart';
 
 class SearchTab extends StatelessWidget {
@@ -14,6 +15,8 @@ class SearchTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final localizations = AppLocalizations.of(context)!;
     return SafeArea(
       child: BlocProvider(
         create: (context) => SearchBloc()..add(GetMoviesEvent()),
@@ -51,7 +54,7 @@ class SearchTab extends StatelessWidget {
                           ),
                           fillColor: AppColors.darkGray,
                           filled: true,
-                          hintText: "Search ",
+                          hintText: localizations.search,
                           hintStyle: TextStyle(
                             color: AppColors.white,
                           ),

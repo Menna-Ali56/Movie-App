@@ -4,6 +4,8 @@ import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/size_utils.dart';
 import 'package:provider/provider.dart';
+import '../../../../bloc/language/language_bloc.dart';
+import '../../../../bloc/language/language_event.dart';
 import '../../../../provider/user_provider.dart';
 import '../../../../utils/app_assets.dart';
 import '../../../../utils/app_colors.dart';
@@ -208,12 +210,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
+
                   Container(
                     width: 130,
                     height: 62,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 7,
-                    ),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: AppColors.yellow,
@@ -221,62 +222,81 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       borderRadius: BorderRadius.circular(35),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Stack(
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedLanguage = 0;
-                            });
+                        // English flag
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedLanguage = 0;
+                              });
 
-                            print("English Selected");
-
-                            // TODO: English onTap
-                          },
-                          child: Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: selectedLanguage == 0
-                                  ? AppColors.yellow
-                                  : AppColors.transparentColor,
-                              shape: BoxShape.circle,
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              '🇺🇸',
-                              style: TextStyle(
-                                fontSize: 30,
+                              context.read<LanguageBloc>().add(
+                                ChangeLanguageEvent('en'),
+                              );
+                            },
+                            child: const SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: Center(
+                                child: Text(
+                                  '🇺🇸',
+                                  style: TextStyle(fontSize: 30),
+                                ),
                               ),
                             ),
                           ),
                         ),
 
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedLanguage = 1;
-                            });
+                        // Arabic flag
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedLanguage = 1;
+                              });
 
-                            print("Arabic Selected");
-
-                            // TODO: Arabic onTap
-                          },
-                          child: Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: selectedLanguage == 1
-                                  ? AppColors.yellow
-                                  : AppColors.transparentColor,
-                              shape: BoxShape.circle,
+                              context.read<LanguageBloc>().add(
+                                ChangeLanguageEvent('ar'),
+                              );
+                            },
+                            child: const SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: Center(
+                                child: Text(
+                                  '🇪🇬',
+                                  style: TextStyle(fontSize: 30),
+                                ),
+                              ),
                             ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              '🇪🇬',
-                              style: TextStyle(
-                                fontSize: 30,
+                          ),
+                        ),
+
+                        // Yellow circle
+                        AnimatedAlign(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeInOut,
+                          alignment: selectedLanguage == 0
+                              ? Alignment.centerLeft
+                              : Alignment.centerRight,
+                          child: IgnorePointer(
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              decoration: const BoxDecoration(
+                                color: AppColors.yellow,
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                selectedLanguage == 0 ? '🇺🇸' : '🇪🇬',
+                                style: const TextStyle(
+                                  fontSize: 30,
+                                ),
                               ),
                             ),
                           ),
