@@ -138,10 +138,31 @@ class _ProfileTabState extends State<ProfileTab> {
                                   backgroundColor: AppColors.red,
                                   radius: 15,
                                   verticalPadding: 15,
-                                  onPressed: () {
+                                  onPressed:
+                                     () async {
+                                      await FirebaseAuth.instance.signOut();
 
-                                  },
-                                  child: Image.asset(AppAssets.iconExit),
+                                      if (!context.mounted) return;
+
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        AppRoutes.login_screen,
+                                            (route) => false,
+                                      );
+                                    },
+
+
+                                  child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      localizations.exit,
+                                      style: AppStyles.regular20White,
+                                    ),
+                                    const SizedBox(width: 8),
+                                   Icon(Icons.exit_to_app_outlined,color: AppColors.white,)
+                                  ],
+                                ),
                                 ),
                               ),
                             ],
