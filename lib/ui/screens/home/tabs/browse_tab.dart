@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_app/models/movie_model.dart';
+
 import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
 import 'package:movie_app/utils/app_colors.dart';
 
