@@ -250,6 +250,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create Account'**
   String get create_account;
+
+  /// No description provided for @watch.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch'**
+  String get watch;
+
+  /// No description provided for @screen_shots.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Shots'**
+  String get screen_shots;
+
+  /// No description provided for @similar.
+  ///
+  /// In en, this message translates to:
+  /// **'Similar'**
+  String get similar;
+
+  /// No description provided for @summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get summary;
+
+  /// No description provided for @cast.
+  ///
+  /// In en, this message translates to:
+  /// **'Cast'**
+  String get cast;
+
+  /// No description provided for @genres.
+  ///
+  /// In en, this message translates to:
+  /// **'Genres'**
+  String get genres;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -25,5 +25,11 @@
  "delete_account": "حذف الحساب",
  "update_data": "تحديث البيانات",
  "phone_number": "رقم الهاتف",
- "create_account": "إنشاء حساب"
+ "create_account": "إنشاء حساب",
+ "watch": "مشاهدة",
+ "screen_shots": "لقطات الشاشة",
+ "similar": "أفلام مشابهة",
+ "summary": "الملخص",
+ "cast": "طاقم التمثيل",
+ "genres": "الأنواع"
 }

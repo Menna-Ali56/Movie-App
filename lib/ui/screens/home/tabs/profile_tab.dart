@@ -5,14 +5,13 @@ import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../l10n/app_localizations.dart';
 import '../../../../provider/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/utils/firebase_utils.dart';
-
 import '../widgets/movie_card.dart';
+
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
 
@@ -27,6 +26,7 @@ class _ProfileTabState extends State<ProfileTab> {
     final localizations = AppLocalizations.of(context)!;
     var userProvider=Provider.of<UserProvider>(context);
     final user = FirebaseAuth.instance.currentUser;
+
     historyFuture ??= user == null
         ? null
         : FireBaseUtils.getHistory(user.uid);

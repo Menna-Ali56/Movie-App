@@ -85,4 +85,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get create_account => 'Create Account';
+
+  @override
+  String get watch => 'Watch';
+
+  @override
+  String get screen_shots => 'Screen Shots';
+
+  @override
+  String get similar => 'Similar';
+
+  @override
+  String get summary => 'Summary';
+
+  @override
+  String get cast => 'Cast';
+
+  @override
+  String get genres => 'Genres';
 }
