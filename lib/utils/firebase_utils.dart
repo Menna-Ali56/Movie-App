@@ -1,20 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
+import '../models/movie_model.dart';
 import '../models/my_user.dart';
 
 class FireBaseUtils {
   static CollectionReference<MyUser> getUsersCollections() {
-    return FirebaseFirestore.instance.collection(MyUser.collectionName)
+    return FirebaseFirestore.instance
+        .collection(MyUser.collectionName)
         .withConverter<MyUser>(
-
-      fromFirestore: ((snapshot, options) =>
-          MyUser.fromFireStore(snapshot.data()!)),
-
-      toFirestore: (user, options) => user.toFireStore(),
-    );
+          fromFirestore: ((snapshot, options) =>
+              MyUser.fromFireStore(snapshot.data()!)),
+          toFirestore: (user, options) => user.toFireStore(),
+        );
   }
-
 
   static Future<void> addUserInFireStore(MyUser myUser) {
     // todo:1-collection
@@ -26,14 +24,66 @@ class FireBaseUtils {
     return docRef.set(myUser);
 
     ///getUsersCollections().doc(myUser.id).set(myUser);
-
-
   }
 
   static Future<MyUser?> readUserFromFireStore(String uId) async {
-    DocumentSnapshot<MyUser> querySnapshot = await getUsersCollections()
-        .doc(uId).get();
+    DocumentSnapshot<MyUser> querySnapshot =
+        await getUsersCollections().doc(uId).get();
     return querySnapshot.data();
   }
 
+  static Future<void> addMovieToHistory({
+    required String userId,
+    required Movies movie,
+  }) async {
+    await FirebaseFirestore.instance
+        .collection(MyUser.collectionName)
+        .doc(userId)
+        .collection('history')
+        .doc(movie.id.toString())
+        .set({
+      'movieId': movie.id,
+      'title': movie.title,
+      'poster': movie.mediumCoverImage,
+      'rating': movie.rating,
+      'visitedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  static Future<List<Movies>> getHistory(String userId) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection(MyUser.collectionName)
+        .doc(userId)
+        .collection('history')
+        .orderBy('visitedAt', descending: true)
+        .get();
+
+    return querySnapshot.docs.map((doc) {
+      final data = doc.data();
+
+      return Movies(
+        id: data['movieId'],
+        title: data['title'],
+        mediumCoverImage: data['poster'],
+        rating: (data['rating'] as num?)?.toDouble(),
+      );
+    }).toList();
+  }
+
+  static Future<void> addMovieToWatchList({
+    required String userId,
+    required Movies movie,
+  }) async {
+    await FirebaseFirestore.instance
+        .collection(MyUser.collectionName)
+        .doc(userId)
+        .collection('watchList')
+        .doc(movie.id.toString())
+        .set({
+      'movieId': movie.id,
+      'title': movie.title,
+      'poster': movie.mediumCoverImage,
+      'rating': movie.rating,
+    });
+  }
 }
