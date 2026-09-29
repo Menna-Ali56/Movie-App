@@ -4,7 +4,6 @@ import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
-import 'package:movie_app/utils/size_utils.dart';
 
 class UpdateProfile extends StatefulWidget {
   const UpdateProfile({super.key});
@@ -123,7 +122,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 decoration: InputDecoration(
                   fillColor: AppColors.darkGray,
                   filled: true,
-                  prefixIcon: Image.asset(AppAssets.User),
+                  prefixIcon: Image.asset(AppAssets.user),
                   hintText: 'John Safwat',
                   hintStyle: AppStyles.roboto20White500,
                   contentPadding:

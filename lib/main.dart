@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:movie_app/l10n/app_localizations.dart';
 import 'package:movie_app/ui/screens/Auth/register/register_screen.dart';
 import 'package:movie_app/ui/screens/Auth/reset_password/reset_password.dart';
+import 'package:movie_app/ui/screens/home/tabs/movie_details/movie_details_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 

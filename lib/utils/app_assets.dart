@@ -31,10 +31,16 @@ class AppAssets {
   static const String searchTab = 'assets/images/search_tab.png';
   static const String watchNow = 'assets/images/watch_Now.png';
   static const String star = 'assets/images/star.png';
+  static const String star2 = 'assets/images/star2.png';
   static const String homeImage = 'assets/images/home_image.png';
   static const String iconExit = 'assets/images/icon_exit.png';
   static const String phone = 'assets/images/phone.png';
-  static const String User = 'assets/images/User-4.png';
+  static const String user = 'assets/images/User-4.png';
+  static const String time = 'assets/images/time.png';
+  static const String favorite = 'assets/images/favorite.png';
+  static const String play = 'assets/images/play.png';
+  static const String save = 'assets/images/save.png';
+
   static const List<String> listUpdatProfile = [
     'assets/images/avatar_1.png',
     'assets/images/avatar_2.png',
