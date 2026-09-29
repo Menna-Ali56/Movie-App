@@ -6,7 +6,7 @@ import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
-
+import 'package:movie_app/models/my_user.dart';
 class UpdateProfile extends StatefulWidget {
   const UpdateProfile({super.key});
 
