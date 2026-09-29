@@ -6,6 +6,7 @@ import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../provider/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:movie_app/models/movie_model.dart';
@@ -23,6 +24,7 @@ class _ProfileTabState extends State<ProfileTab> {
   Future<List<Movies>>? historyFuture;
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     var userProvider=Provider.of<UserProvider>(context);
     final user = FirebaseAuth.instance.currentUser;
     historyFuture ??= user == null
@@ -74,7 +76,7 @@ class _ProfileTabState extends State<ProfileTab> {
                                     height: 10,
                                   ),
                                   Text(
-                                    "Wish List",
+                                    localizations.wish_list,
                                     style: AppStyles.regular20White,
                                   ),
                                 ],
@@ -97,7 +99,7 @@ class _ProfileTabState extends State<ProfileTab> {
                                   height: 10,
                                 ),
                                 Text(
-                                  "History",
+                                  localizations.history,
                                   style: AppStyles.regular20White,
                                 ),
                               ],
@@ -122,7 +124,7 @@ class _ProfileTabState extends State<ProfileTab> {
                                     );
                                   },
                                   child: Text(
-                                    "Edit Profile",
+                                    localizations.edit_profile,
                                     style: AppStyles.regular20DarkGray,
                                   ),
                                 ),
@@ -136,7 +138,9 @@ class _ProfileTabState extends State<ProfileTab> {
                                   backgroundColor: AppColors.red,
                                   radius: 15,
                                   verticalPadding: 15,
-                                  onPressed: () {},
+                                  onPressed: () {
+
+                                  },
                                   child: Image.asset(AppAssets.iconExit),
                                 ),
                               ),
@@ -162,7 +166,7 @@ class _ProfileTabState extends State<ProfileTab> {
                                   color: AppColors.yellow,
                                 ),
                                 Text(
-                                  "Watch List",
+                                  localizations.watch_list,
                                   style: AppStyles.regular14White,
                                 ),
                               ],
@@ -176,7 +180,7 @@ class _ProfileTabState extends State<ProfileTab> {
                                   color: AppColors.yellow,
                                 ),
                                 Text(
-                                  "History",
+                                  localizations.history,
                                   style: AppStyles.regular14White,
                                 ),
                               ],
