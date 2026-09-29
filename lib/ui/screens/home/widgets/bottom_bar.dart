@@ -1,4 +1,3 @@
-import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/ui/screens/home/tabs/browse_tab.dart';
 import 'package:movie_app/ui/screens/home/tabs/home_screen.dart';
