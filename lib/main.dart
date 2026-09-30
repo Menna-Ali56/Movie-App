@@ -18,7 +18,6 @@ import 'package:movie_app/ui/screens/home/tabs/profile_tab.dart';
 import 'package:movie_app/ui/screens/home/tabs/update_profile/update_profile.dart';
 import 'package:movie_app/ui/screens/home/widgets/bottom_bar.dart';
 
-
 import 'ui/screens/home/tabs/home_screen.dart';
 import 'ui/screens/onboarding/onboarding_screen.dart';
 import 'utils/app_routes.dart';
@@ -49,26 +48,20 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-
   Widget build(BuildContext context) {
     return BlocBuilder<LanguageBloc, LanguageState>(
       builder: (context, state) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-
           locale: Locale(state.languageCode),
-
           localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-
           supportedLocales: AppLocalizations.supportedLocales,
-
-          initialRoute: AppRoutes.onboarding,
-
+          initialRoute: AppRoutes.bottom_bar,
           routes: {
             AppRoutes.onboarding: (context) => const OnboardingScreen(),
             AppRoutes.login_screen: (context) => LoginScreen(),

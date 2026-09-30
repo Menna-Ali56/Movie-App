@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/movie_details_model.dart';
 import 'package:movie_app/models/movie_model.dart';
@@ -14,6 +17,7 @@ import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:movie_app/utils/firebase_utils.dart';
+
 class MovieDetailsScreen extends StatefulWidget {
   final Movies movie;
 
@@ -25,14 +29,14 @@ class MovieDetailsScreen extends StatefulWidget {
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   late Future<MovieDetailsModel> movieDetails;
-
+  bool isSave = false;
   @override
   void initState() {
     super.initState();
     movieDetails = ApiMovieDetails.getDetails(widget.movie.id!, true);
     _addToHistory();
-
   }
+
   Future<void> _addToHistory() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -45,6 +49,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
       movie: widget.movie,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -75,6 +80,23 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   MovieDetailsHeader(
                     movie: detailMovie,
                     onBackPressed: () => Navigator.pop(context),
+                    isSave: isSave,
+                    onIsSavePressed: () async {
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user == null) {
+                        return;
+                      }
+                      setState(() {
+                        isSave = !isSave;
+                      });
+                      if (isSave) {
+                        await FireBaseUtils.addMovieToSave(
+                            userId: user.uid, movie: widget.movie);
+                      } else {
+                        await FireBaseUtils.removeMovieFromSave(
+                            userId: user.uid, movie: widget.movie);
+                      }
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),

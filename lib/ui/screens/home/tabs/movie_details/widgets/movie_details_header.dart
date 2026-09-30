@@ -7,11 +7,14 @@ import 'package:movie_app/utils/app_styles.dart';
 class MovieDetailsHeader extends StatelessWidget {
   final Movie movie;
   final VoidCallback onBackPressed;
-
+  final VoidCallback onIsSavePressed;
+  final bool isSave;
   const MovieDetailsHeader({
     super.key,
     required this.movie,
     required this.onBackPressed,
+    required this.onIsSavePressed,
+    required this.isSave,
   });
 
   @override
@@ -47,7 +50,13 @@ class MovieDetailsHeader extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                Image.asset(AppAssets.save),
+                InkWell(
+                    onTap: onIsSavePressed,
+                    child: ColorFiltered(
+                        colorFilter: ColorFilter.mode(
+                            isSave ? AppColors.yellow : AppColors.white,
+                            BlendMode.srcIn),
+                        child: Image.asset(AppAssets.save))),
               ],
             ),
           ),
