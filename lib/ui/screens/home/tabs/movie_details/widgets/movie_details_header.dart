@@ -3,19 +3,38 @@ import 'package:movie_app/models/movie_details_model.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_styles.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class MovieDetailsHeader extends StatelessWidget {
+class MovieDetailsHeader extends StatefulWidget {
   final Movie movie;
   final VoidCallback onBackPressed;
   final VoidCallback onIsSavePressed;
   final bool isSave;
+  final bool showTrailer;
+  final VoidCallback onTrailerPressed;
   const MovieDetailsHeader({
     super.key,
     required this.movie,
     required this.onBackPressed,
     required this.onIsSavePressed,
     required this.isSave,
+    required this.showTrailer,
+    required this.onTrailerPressed,
   });
+
+  @override
+  State<MovieDetailsHeader> createState() => _MovieDetailsHeaderState();
+}
+
+class _MovieDetailsHeaderState extends State<MovieDetailsHeader> {
+  late YoutubePlayerController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = YoutubePlayerController();
+    controller.loadVideoById(videoId: widget.movie.ytTrailerCode!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +43,15 @@ class MovieDetailsHeader extends StatelessWidget {
       width: double.infinity,
       child: Stack(
         children: [
-          Image.network(movie.largeCoverImage ?? ""),
+          widget.showTrailer
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: SizedBox(
+                      width: double.infinity,
+                      height: 560,
+                      child: YoutubePlayer(controller: controller)),
+                )
+              : Image.network(widget.movie.largeCoverImage ?? ""),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -37,13 +64,16 @@ class MovieDetailsHeader extends StatelessWidget {
               ),
             ),
           ),
-          Center(child: Image.asset(AppAssets.play)),
+          if (!widget.showTrailer)
+            InkWell(
+                onTap: widget.onTrailerPressed,
+                child: Center(child: Image.asset(AppAssets.play))),
           Padding(
             padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
             child: Row(
               children: [
                 InkWell(
-                  onTap: onBackPressed,
+                  onTap: widget.onBackPressed,
                   child: const Icon(
                     Icons.arrow_back_ios,
                     color: AppColors.white,
@@ -51,34 +81,35 @@ class MovieDetailsHeader extends StatelessWidget {
                 ),
                 const Spacer(),
                 InkWell(
-                    onTap: onIsSavePressed,
+                    onTap: widget.onIsSavePressed,
                     child: ColorFiltered(
                         colorFilter: ColorFilter.mode(
-                            isSave ? AppColors.yellow : AppColors.white,
+                            widget.isSave ? AppColors.yellow : AppColors.white,
                             BlendMode.srcIn),
                         child: Image.asset(AppAssets.save))),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Center(
-                  child: Text(
-                    movie.titleEnglish ?? "",
-                    style: AppStyles.medium36White,
+          if (!widget.showTrailer)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      widget.movie.titleEnglish ?? "",
+                      style: AppStyles.medium36White,
+                    ),
                   ),
-                ),
-                Text(
-                  (movie.year ?? "").toString(),
-                  style: AppStyles.regular20Gray,
-                ),
-              ],
+                  Text(
+                    (widget.movie.year ?? "").toString(),
+                    style: AppStyles.regular20Gray,
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

@@ -25,9 +25,14 @@ import 'utils/app_routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    debugPrint("🔥 Firebase initialized successfully");
+  } catch (e) {
+    debugPrint("🔥 Firebase ERROR: $e");
+  }
 
   runApp(
     MultiProvider(

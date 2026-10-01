@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/movie_details_model.dart';
 import 'package:movie_app/models/movie_model.dart';
@@ -30,6 +27,7 @@ class MovieDetailsScreen extends StatefulWidget {
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   late Future<MovieDetailsModel> movieDetails;
   bool isSave = false;
+  bool showTrailer = false;
   @override
   void initState() {
     super.initState();
@@ -81,11 +79,18 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     movie: detailMovie,
                     onBackPressed: () => Navigator.pop(context),
                     isSave: isSave,
+                    showTrailer: showTrailer,
+                    onTrailerPressed: () {
+                      setState(() {
+                        showTrailer = true;
+                      });
+                    },
                     onIsSavePressed: () async {
                       final user = FirebaseAuth.instance.currentUser;
                       if (user == null) {
                         return;
                       }
+
                       setState(() {
                         isSave = !isSave;
                       });
@@ -106,7 +111,11 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                           child: CustomElevatedButton(
                             backgroundColor: AppColors.red,
                             verticalPadding: 10,
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {
+                                showTrailer = true;
+                              });
+                            },
                             child: Text(
                               'Watch',
                               style: AppStyles.regular20White,
