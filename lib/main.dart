@@ -6,6 +6,7 @@ import 'package:movie_app/ui/screens/Auth/register/register_screen.dart';
 import 'package:movie_app/ui/screens/Auth/reset_password/reset_password.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:movie_app/ui/screens/home/tabs/movieGenre/movie_genre_screen.dart';
 import 'package:provider/provider.dart';
 import 'bloc/language/language_state.dart';
 import 'firebase_options.dart';
