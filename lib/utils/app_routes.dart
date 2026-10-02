@@ -8,5 +8,4 @@ class AppRoutes {
   static const String update_profile = 'UpdateProfile';
   static const String profile_tab = 'profile_tab';
   static const String movie_details_screen = 'movie_details_screen';
-  static const String movie_genre_screen = 'MovieGenreScreen';
 }
