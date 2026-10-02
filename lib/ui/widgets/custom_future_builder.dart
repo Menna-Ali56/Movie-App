@@ -10,12 +10,14 @@ class CustomFutureBuilder extends StatefulWidget {
   bool autoPlay;
   bool enlargeCenterPage;
   double aspectRatio;
+  List<Movies>? movieList;
   CustomFutureBuilder({
     super.key,
     this.onChangeImage,
     this.autoPlay = false,
     this.enlargeCenterPage = false,
     this.aspectRatio = 8 / 6,
+    this.movieList,
   });
 
   @override
