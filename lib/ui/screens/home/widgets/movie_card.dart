@@ -3,9 +3,10 @@ import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/ui/screens/home/tabs/movie_details/movie_details_screen.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class MovieCard extends StatelessWidget {
-  const MovieCard({
+  MovieCard({
     super.key,
     required this.movie,
   });
@@ -32,47 +33,47 @@ class MovieCard extends StatelessWidget {
             Container(
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: SizeConfig.circular(context, 20),
               ),
               child: posterImage.isEmpty
-                  ? const Icon(
+                  ? Icon(
                       Icons.broken_image,
                       color: Colors.white,
                     )
                   : Image.network(
                       posterImage,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
+                      errorBuilder: (context, error, stackTrace) => Icon(
                         Icons.broken_image,
                         color: Colors.white,
                       ),
                     ),
             ),
             Container(
-              margin: const EdgeInsets.all(10),
-              height: 28,
-              width: 58,
+              margin: SizeConfig.all(context, 10),
+              height: SizeConfig.h(context, 28),
+              width: SizeConfig.w(context, 58),
               decoration: BoxDecoration(
                 color: AppColors.darkGray.withValues(alpha: 0.75),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: SizeConfig.circular(context, 8),
               ),
               child: Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 4),
+                    padding: SizeConfig.only(context, left: 4),
                     child: Text(
                       movie.rating?.toString() ?? '0.0',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.white,
-                        fontSize: 16,
+                        fontSize: SizeConfig.w(context, 16),
                         fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
                   Image.asset(
                     AppAssets.star,
-                    height: 15,
-                    width: 15,
+                    height: SizeConfig.h(context, 15),
+                    width: SizeConfig.w(context, 15),
                   ),
                 ],
               ),

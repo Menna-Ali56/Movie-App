@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/utils/firebase_utils.dart';
 import '../widgets/movie_card.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
@@ -41,7 +42,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding:
-                        const EdgeInsets.only(top: 24, left: 24, right: 10),
+                        SizeConfig.only(context, top: 24, left: 24, right: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -51,11 +52,11 @@ class _ProfileTabState extends State<ProfileTab> {
                               children: [
                                 Image.asset(
                                   AppAssets.avatar_1,
-                                  height: 100,
-                                  width: 100,
+                                  height: SizeConfig.h(context, 100),
+                                  width: SizeConfig.w(context, 100),
                                 ),
-                                const SizedBox(
-                                  height: 15,
+                                SizedBox(
+                                  height: SizeConfig.h(context, 15),
                                 ),
                                 Text(
                                   userProvider.currentUser!.name,
@@ -65,15 +66,15 @@ class _ProfileTabState extends State<ProfileTab> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.only(left: 20, right: 25),
+                                SizeConfig.only(context, left: 20, right: 25),
                               child: Column(
                                 children: [
                                   Text(
                                     "12",
                                     style: AppStyles.bold24White,
                                   ),
-                                  const SizedBox(
-                                    height: 10,
+                                  SizedBox(
+                                    height: SizeConfig.h(context, 10),
                                   ),
                                   Text(
                                     localizations.wish_list,
@@ -95,8 +96,8 @@ class _ProfileTabState extends State<ProfileTab> {
                                     );
                                   },
                                 ),
-                                const SizedBox(
-                                  height: 10,
+                                SizedBox(
+                                  height: SizeConfig.h(context, 10),
                                 ),
                                 Text(
                                   localizations.history,
@@ -107,16 +108,15 @@ class _ProfileTabState extends State<ProfileTab> {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(
-                              top: 24, right: 10, bottom: 24),
+                          padding: SizeConfig.only(context, top: 24, right: 10, bottom: 24),
                           child: Row(
                             children: [
                               Expanded(
                                 flex: 2,
                                 child: CustomElevatedButton(
                                   backgroundColor: AppColors.yellow,
-                                  radius: 15,
-                                  verticalPadding: 15,
+                                  radius: SizeConfig.w(context, 15),
+                                  verticalPadding: SizeConfig.h(context, 15),
                                   onPressed: () {
                                     Navigator.pushNamed(
                                       context,
@@ -129,15 +129,15 @@ class _ProfileTabState extends State<ProfileTab> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(
-                                width: 10,
+                              SizedBox(
+                              width: SizeConfig.w(context, 10),
                               ),
                               Expanded(
                                 flex: 1,
                                 child: CustomElevatedButton(
                                   backgroundColor: AppColors.red,
-                                  radius: 15,
-                                  verticalPadding: 15,
+                                  radius: SizeConfig.w(context, 15),
+                                  verticalPadding: SizeConfig.h(context, 15),
                                   onPressed:
                                      () async {
                                       await FirebaseAuth.instance.signOut();
@@ -159,7 +159,7 @@ class _ProfileTabState extends State<ProfileTab> {
                                       localizations.exit,
                                       style: AppStyles.regular20White,
                                     ),
-                                    const SizedBox(width: 8),
+                                    SizedBox(width: SizeConfig.w(context, 8)),
                                    Icon(Icons.exit_to_app_outlined,color: AppColors.white,)
                                   ],
                                 ),
@@ -231,7 +231,7 @@ class _ProfileTabState extends State<ProfileTab> {
                   future: FireBaseUtils.getHistory(user.uid),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
+                      return Center(
                         child: CircularProgressIndicator(
                           color: AppColors.yellow,
                         ),
@@ -256,13 +256,13 @@ class _ProfileTabState extends State<ProfileTab> {
                     }
 
                     return GridView.builder(
-                      padding: const EdgeInsets.all(10),
+                      padding: SizeConfig.all(context, 10),
                       gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                      SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.7,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
+                        crossAxisSpacing: SizeConfig.w(context, 12),
+                        mainAxisSpacing: SizeConfig.h(context, 12),
                       ),
                       itemCount: history.length,
                       itemBuilder: (context, index) {

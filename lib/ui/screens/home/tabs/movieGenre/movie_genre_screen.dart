@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
-import 'package:movie_app/ui/widgets/genre_movie_list.dart';
 import 'package:movie_app/utils/app_colors.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class MovieGenreScreen extends StatefulWidget {
   final List<Movies> movies;
@@ -29,7 +29,7 @@ class _MovieGenreScreenState extends State<MovieGenreScreen> {
               Navigator.pop(context);
             },
             child: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
+            padding: SizeConfig.only(context, left: 8),
               child: Icon(
                 Icons.arrow_back_ios,
                 color: AppColors.white,
@@ -42,13 +42,13 @@ class _MovieGenreScreenState extends State<MovieGenreScreen> {
           ),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: SizeConfig.all(context, 8),
           child: GridView.builder(
             itemCount: widget.movies.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 12,
+              crossAxisSpacing: SizeConfig.w(context, 8),
+              mainAxisSpacing: SizeConfig.h(context, 12),
               childAspectRatio: 0.65,
             ),
             itemBuilder: (context, index) {

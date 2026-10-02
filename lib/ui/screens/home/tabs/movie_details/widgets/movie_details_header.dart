@@ -3,6 +3,7 @@ import 'package:movie_app/models/movie_details_model.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_styles.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MovieDetailsHeader extends StatefulWidget {
@@ -39,16 +40,16 @@ class _MovieDetailsHeaderState extends State<MovieDetailsHeader> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 560,
+      height: SizeConfig.h(context, 560),
       width: double.infinity,
       child: Stack(
         children: [
           widget.showTrailer
               ? Padding(
-                  padding: const EdgeInsets.only(top: 50),
+                  padding: SizeConfig.only(context, top: 50),
                   child: SizedBox(
                       width: double.infinity,
-                      height: 560,
+                      height: SizeConfig.h(context, 560),
                       child: YoutubePlayer(controller: controller)),
                 )
               : Image.network(widget.movie.largeCoverImage ?? ""),
@@ -69,17 +70,17 @@ class _MovieDetailsHeaderState extends State<MovieDetailsHeader> {
                 onTap: widget.onTrailerPressed,
                 child: Center(child: Image.asset(AppAssets.play))),
           Padding(
-            padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
+            padding: SizeConfig.only(context, left: 20, top: 10, right: 20),
             child: Row(
               children: [
                 InkWell(
                   onTap: widget.onBackPressed,
-                  child: const Icon(
+                  child: Icon(
                     Icons.arrow_back_ios,
                     color: AppColors.white,
                   ),
                 ),
-                const Spacer(),
+                Spacer(),
                 InkWell(
                     onTap: widget.onIsSavePressed,
                     child: ColorFiltered(
@@ -92,7 +93,7 @@ class _MovieDetailsHeaderState extends State<MovieDetailsHeader> {
           ),
           if (!widget.showTrailer)
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: SizeConfig.all(context, 8),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,

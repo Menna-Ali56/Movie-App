@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/models/movie_details_model.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/ui/screens/home/apis/api_movie.dart';
 import 'package:movie_app/ui/screens/home/tabs/movieGenre/movie_genre_screen.dart';
-import 'package:movie_app/ui/widgets/custom_future_builder.dart';
 import 'package:movie_app/ui/widgets/genre_movie_list.dart';
 import 'package:movie_app/utils/app_colors.dart';
-import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class MovieGenre extends StatefulWidget {
   const MovieGenre({super.key});
@@ -31,14 +29,14 @@ class _MovieGenreState extends State<MovieGenre> {
       future: movie,
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(
               color: Colors.amber,
             ),
           );
         }
         if (snap.hasError) {
-          return const Center(
+          return Center(
             child: Text(
               "Something went wrong",
               style: TextStyle(color: Colors.white),
@@ -49,7 +47,7 @@ class _MovieGenreState extends State<MovieGenre> {
           return Center(
             child: Text(
               snap.data?.statusMessage ?? "",
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white),
             ),
           );
         }
@@ -59,7 +57,7 @@ class _MovieGenreState extends State<MovieGenre> {
           genres.addAll(item.genres ?? []);
         }
         return Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: SizeConfig.all(context, 8),
           child: ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -68,15 +66,12 @@ class _MovieGenreState extends State<MovieGenre> {
                 final currentGenre = genres.elementAt(index);
 
                 final genreMovies = movie
-                    .where(
-                        (item) => item.genres?.contains(currentGenre) ?? false)
+                    .where((item) => item.genres?.contains(currentGenre) ?? false)
                     .toList();
 
                 return Column(
                   children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: SizeConfig.h(context, 10)),
                     Row(
                       children: [
                         Expanded(
@@ -109,9 +104,7 @@ class _MovieGenreState extends State<MovieGenre> {
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: SizeConfig.h(context, 10)),
                     GenreMovieList(
                       movies: genreMovies,
                     ),

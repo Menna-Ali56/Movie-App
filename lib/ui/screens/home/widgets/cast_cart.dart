@@ -4,6 +4,7 @@ import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/ui/screens/home/apis/api_movie_details.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_styles.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class CastCart extends StatefulWidget {
   final Movies movie;
@@ -30,13 +31,13 @@ class _CastCartState extends State<CastCart> {
         future: movieDetails,
         builder: (context, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
-            return const Center(
+            return Center(
                 child: CircularProgressIndicator(
               color: AppColors.yellow,
             ));
           }
           if (snap.hasError) {
-            return const Center(
+            return Center(
               child: Text(
                 "Something went wrong",
                 style: TextStyle(color: Colors.white),
@@ -47,7 +48,7 @@ class _CastCartState extends State<CastCart> {
             return Center(
               child: Text(
                 snap.data?.statusMessage ?? "",
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
               ),
             );
           }
@@ -58,9 +59,9 @@ class _CastCartState extends State<CastCart> {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
-                  mainAxisExtent: 90,
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 10),
+                  mainAxisExtent: SizeConfig.h(context, 90),
+                  crossAxisSpacing: SizeConfig.w(context, 5),
+                  mainAxisSpacing: SizeConfig.h(context, 10)),
               itemCount: cast.length,
               itemBuilder: (context, index) {
                 final actor = cast[index];
@@ -68,11 +69,8 @@ class _CastCartState extends State<CastCart> {
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
                       color: AppColors.darkGray.withValues(alpha: 0.75),
-                      borderRadius: BorderRadius.circular(16)),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 6,
-                    horizontal: 8,
-                  ),
+                      borderRadius: SizeConfig.circular(context, 16)),
+                  padding: SizeConfig.symmetric(context, vertical: 6, horizontal: 8),
                   child: Row(
                     children: [
                       if (actor.urlSmallImage != null &&
@@ -80,22 +78,22 @@ class _CastCartState extends State<CastCart> {
                         Container(
                           clipBehavior: Clip.antiAlias,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16)),
+                              borderRadius: SizeConfig.circular(context, 16)),
                           child: Image.network(
                             actor.urlSmallImage!,
-                            height: 50,
-                            width: 50,
+                            height: SizeConfig.h(context, 50),
+                            width: SizeConfig.w(context, 50),
                             fit: BoxFit.cover,
                           ),
                         )
                       else
-                        const Icon(
+                        Icon(
                           Icons.person,
                           color: Colors.white,
-                          size: 50,
+                          size: SizeConfig.h(context, 50),
                         ),
                       SizedBox(
-                        width: 10,
+                        width: SizeConfig.w(context, 10),
                       ),
                       Expanded(
                         child: Column(
@@ -107,7 +105,7 @@ class _CastCartState extends State<CastCart> {
                               style: AppStyles.regular14White,
                             ),
                             SizedBox(
-                              height: 5,
+                              height: SizeConfig.h(context, 5),
                             ),
                             Text(
                               'Character : ${actor.characterName ?? ''}',

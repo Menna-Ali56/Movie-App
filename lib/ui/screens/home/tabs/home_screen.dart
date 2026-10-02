@@ -3,12 +3,12 @@ import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/ui/screens/home/widgets/movie_genre.dart';
 import 'package:movie_app/ui/widgets/custom_future_builder.dart';
 import 'package:movie_app/utils/app_assets.dart';
-import 'package:movie_app/utils/app_styles.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 import '../../../../../utils/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -24,32 +24,29 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           SizedBox(
-            height: 465,
+            width: double.infinity,
+            height: SizeConfig.h(context, 465),
             child: Stack(
               children: [
                 Positioned.fill(
                   child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 400),
+                    duration: Duration(milliseconds: 400),
                     child: backgroundImage != null
-                        ? Image.network(
-                            backgroundImage!,
-                            key: ValueKey<String>(backgroundImage!),
-                            fit: BoxFit.fill,
-                            width: MediaQuery.of(context).size.width * 1,
-                            height: MediaQuery.of(context).size.height * 0.90,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Image.asset(
-                              AppAssets.homeImage,
+                        ? SizedBox.expand(
+                            child: Image.network(
+                              backgroundImage!,
+                              key: ValueKey<String>(backgroundImage!),
                               fit: BoxFit.fill,
-                              width: MediaQuery.of(context).size.width * 1,
-                              height: MediaQuery.of(context).size.height * 0.50,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.asset(
+                                AppAssets.mainLay,
+                                fit: BoxFit.fill,
+                              ),
                             ),
                           )
                         : Image.asset(
                             AppAssets.overLayer5,
                             fit: BoxFit.fill,
-                            width: MediaQuery.of(context).size.width * 1,
-                            height: MediaQuery.of(context).size.height * 0.50,
                           ),
                   ),
                 ),
@@ -68,20 +65,39 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(AppAssets.availableNow),
-                    CustomFutureBuilder(
-                      autoPlay: true,
-                      enlargeCenterPage: true,
-                      onChangeImage: (Image) {
-                        setState(() {
-                          backgroundImage = Image;
-                        });
-                      },
+                    SizedBox(
+                      height: SizeConfig.h(context, 120),
+                      child: Center(
+                        child: Image.asset(
+                          AppAssets.availableNow,
+                          fit: BoxFit.contain,
+                          width: SizeConfig.w(context, 180),
+                        ),
+                      ),
                     ),
-                    Image.asset(
-                      AppAssets.watchNow,
-                      width: 245,
+                    SizedBox(
+                      height: SizeConfig.h(context, 260),
+                      child: CustomFutureBuilder(
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                        onChangeImage: (Image) {
+                          setState(() {
+                            backgroundImage = Image;
+                          });
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: SizeConfig.h(context, 80),
+                      child: Center(
+                        child: Image.asset(
+                          AppAssets.watchNow,
+                          fit: BoxFit.contain,
+                          width: SizeConfig.w(context, 245),
+                        ),
+                      ),
                     ),
                   ],
                 ),

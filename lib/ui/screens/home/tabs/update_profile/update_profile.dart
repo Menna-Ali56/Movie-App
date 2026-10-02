@@ -7,7 +7,7 @@ import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
 import 'package:movie_app/models/my_user.dart';
-import 'package:movie_app/utils/size_utils.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 class UpdateProfile extends StatefulWidget {
@@ -121,24 +121,21 @@ class _UpdateProfileState extends State<UpdateProfile> {
       context: context,
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 15,
-            horizontal: 14,
-          ),
+          padding: SizeConfig.symmetric(context, vertical: 15, horizontal: 14),
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.darkGray,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: SizeConfig.circular(context, 20),
             ),
             child: GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: AppAssets.listUpdatProfile.length,
               gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
+              SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+                crossAxisSpacing: SizeConfig.w(context, 10),
+                mainAxisSpacing: SizeConfig.h(context, 10),
               ),
               itemBuilder: (context, index) {
                 return InkWell(
@@ -151,13 +148,13 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     );
                   },
                   child: Container(
-                    margin: const EdgeInsets.all(8),
-                    padding: const EdgeInsets.all(10),
+                    margin: SizeConfig.all(context, 8),
+                    padding: SizeConfig.all(context, 10),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: SizeConfig.circular(context, 20),
                       border: Border.all(
                         color: AppColors.yellow,
-                        width: 1,
+                        width: SizeConfig.w(context, 1),
                       ),
                     ),
                     child: Image.asset(
@@ -261,8 +258,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
   @override
   Widget build(BuildContext context) {
-    var width = context.width;
-    var height = context.height;
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -293,14 +288,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
         ),
         actions:  [
           SizedBox(
-            width: width*0.1,
+            width: SizeConfig.w(context, 39),
           ),
         ],
       ),
       body: Padding(
-        padding:  EdgeInsets.only(
-          top: width*0.1,
-        ),
+        padding:  SizeConfig.only(context, top: 39),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -311,8 +304,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
               onTap: chooseAvatar,
               child: Center(
                 child: SizedBox(
-                  height: height*0.2,
-                  width: width*0.4,
+                  height: SizeConfig.h(context, 168.8),
+                  width: SizeConfig.w(context, 156),
                   child: Image.asset(
                     selectedAvatar,
                     fit: BoxFit.contain,
@@ -323,11 +316,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
             // Name
             Padding(
-              padding:  EdgeInsets.only(
-                top: height*0.04,
-                right: width*0.02,
-                left: width*0.02,
-              ),
+              padding:  SizeConfig.only(context, top: 33.76, right: 7.8, left: 7.8),
               child: TextField(
                 controller: nameController,
                 cursorColor: AppColors.yellow,
@@ -340,22 +329,19 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   prefixIcon: Image.asset(AppAssets.user),
                   hintText: localizations.name,
                   hintStyle: AppStyles.roboto20White500,
-                  contentPadding:  EdgeInsets.symmetric(
-                    vertical: height*0.02,
-                    horizontal: width*0.04,
-                  ),
+                  contentPadding:  SizeConfig.symmetric(context, vertical: 16.88, horizontal: 15.6),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
+                    borderRadius: SizeConfig.circular(context, 15),
+                    borderSide: BorderSide(
                       color: AppColors.darkGray,
-                      width: 1,
+                      width: SizeConfig.w(context, 1),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
+                    borderRadius: SizeConfig.circular(context, 15),
+                    borderSide: BorderSide(
                       color: AppColors.yellow,
-                      width: 1,
+                      width: SizeConfig.w(context, 1),
                     ),
                   ),
                 ),
@@ -364,11 +350,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
             // Phone
             Padding(
-              padding:  EdgeInsets.only(
-                top: height*0.04,
-                right: width*0.02,
-                left: width*0.02,
-              ),
+              padding:  SizeConfig.only(context, top: 33.76, right: 7.8, left: 7.8),
               child: TextField(
                 controller: phoneController,
                 keyboardType: TextInputType.phone,
@@ -386,22 +368,19 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   hintStyle: const TextStyle(
                     color: AppColors.white,
                   ),
-                  contentPadding:  EdgeInsets.symmetric(
-                    vertical: height*0.02,
-                    horizontal: width*0.02,
-                  ),
+                  contentPadding:  SizeConfig.symmetric(context, vertical: 16.88, horizontal: 7.8),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
+                    borderRadius: SizeConfig.circular(context, 15),
+                    borderSide: BorderSide(
                       color: AppColors.darkGray,
-                      width: 1,
+                      width: SizeConfig.w(context, 1),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
+                    borderRadius: SizeConfig.circular(context, 15),
+                    borderSide: BorderSide(
                       color: AppColors.yellow,
-                      width: 1,
+                      width: SizeConfig.w(context, 1),
                     ),
                   ),
                 ),
@@ -413,12 +392,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               child: Column(
                 children: [
                   Padding(
-                    padding:  EdgeInsets.only(
-                      top: height*0.03,
-                      right: width*0.02,
-                      left: width*0.02,
-                      bottom: height*0.04,
-                    ),
+                    padding:  SizeConfig.only(context, top: 25.32, right: 7.8, left: 7.8, bottom: 33.76),
                     child: Text(
                       localizations.reset_password,
                       style: AppStyles.regular20White,
@@ -430,17 +404,15 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
             // Delete Account
             Container(
-              margin:  EdgeInsets.symmetric(
-                horizontal: width*0.02,
-              ),
+              margin:  SizeConfig.symmetric(context, horizontal: 7.8),
               child: Center(
                 child: Row(
                   children: [
                     Expanded(
                       child: CustomElevatedButton(
                         backgroundColor: AppColors.red,
-                        radius: 15,
-                        verticalPadding: 15,
+                        radius: SizeConfig.w(context, 15),
+                        verticalPadding: SizeConfig.h(context, 15),
                         onPressed:  isLoading ? null : deleteAccount,
 
                         child: Text(
@@ -454,30 +426,28 @@ class _UpdateProfileState extends State<UpdateProfile> {
               ),
             ),
 
-            const SizedBox(
-              height: 15,
+            SizedBox(
+              height: SizeConfig.h(context, 15),
             ),
 
             // Edit Profile
             Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 10,
-              ),
+              margin: SizeConfig.symmetric(context, horizontal: 10),
               child: Center(
                 child: Row(
                   children: [
                     Expanded(
                       child: CustomElevatedButton(
                         backgroundColor: AppColors.yellow,
-                        radius: 15,
-                        verticalPadding: 15,
-                        horizontalPadding: 5,
+                        radius: SizeConfig.w(context, 15),
+                        verticalPadding: SizeConfig.h(context, 15),
+                        horizontalPadding: SizeConfig.w(context, 5),
                         onPressed: isLoading ? null
                             : updateProfile,
                         child: isLoading
                             ?  SizedBox(
-                          height: height*0.04,
-                          width: width*0.02,
+                          height: SizeConfig.h(context, 33.76),
+                          width: SizeConfig.w(context, 7.8),
                           child: CircularProgressIndicator(
                             color: AppColors.darkGray,
                             strokeWidth: 2,
@@ -495,7 +465,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
             ),
 
              SizedBox(
-              height: height*0.04,
+              height: SizeConfig.h(context, 33.76),
             ),
           ],
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/ui/widgets/custom_elevated_button.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_styles.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class MovieStatButton extends StatelessWidget {
   final String assetPath;
@@ -22,17 +23,17 @@ class MovieStatButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: margin ?? const EdgeInsets.only(left: 12, right: 12),
+      padding: margin ?? SizeConfig.only(context, left: 12, right: 12),
       child: CustomElevatedButton(
         backgroundColor: AppColors.darkGray,
-        verticalPadding: 10,
-        horizontalPadding: horizontalPadding,
+        verticalPadding: SizeConfig.h(context, 10),
+        horizontalPadding: SizeConfig.w(context, horizontalPadding),
         onPressed: () {},
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Image.asset(assetPath),
-            SizedBox(width: iconSpacing),
+            SizedBox(width: SizeConfig.w(context, iconSpacing)),
             Text(
               value,
               style: AppStyles.regular20White,

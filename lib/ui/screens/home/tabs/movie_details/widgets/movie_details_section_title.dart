@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/utils/app_styles.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class MovieDetailsSectionTitle extends StatelessWidget {
   final String title;
@@ -14,7 +15,7 @@ class MovieDetailsSectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding ?? const EdgeInsets.only(left: 10, top: 10, bottom: 5),
+      padding: padding ?? SizeConfig.only(context, left: 10, top: 10, bottom: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

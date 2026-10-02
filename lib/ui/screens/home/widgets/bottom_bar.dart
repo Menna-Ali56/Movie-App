@@ -5,9 +5,10 @@ import 'package:movie_app/ui/screens/home/tabs/profile_tab.dart';
 import 'package:movie_app/ui/screens/home/tabs/search_tab.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class BottomBar extends StatefulWidget {
-  const BottomBar({super.key});
+  BottomBar({super.key});
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -23,11 +24,11 @@ class _BottomBarState extends State<BottomBar> {
       backgroundColor: AppColors.transparentColor,
       body: tabs[currentIndex],
       bottomNavigationBar: Container(
-        margin: EdgeInsets.only(right: 9, left: 9, bottom: 9),
+        margin: SizeConfig.only(context, right: 9, left: 9, bottom: 9),
         clipBehavior: Clip.antiAlias,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.transparentColor,
-          borderRadius: BorderRadius.all(Radius.circular(16)),
+          borderRadius: BorderRadius.all(Radius.circular(SizeConfig.w(context, 16))),
         ),
         child: Theme(
           data: Theme.of(context).copyWith(

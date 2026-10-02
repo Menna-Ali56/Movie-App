@@ -3,6 +3,7 @@ import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/models/movie_suggestion_model.dart';
 import 'package:movie_app/ui/screens/home/apis/api_movie_suggestion.dart';
 import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class MovieSimiler extends StatefulWidget {
   final int movieId;
@@ -35,7 +36,7 @@ class _MovieSimilerState extends State<MovieSimiler> {
           return Center(child: CircularProgressIndicator());
         }
         if (snap.hasError) {
-          return const Center(
+          return Center(
             child: Text(
               "Something went wrong",
               style: TextStyle(color: Colors.white),
@@ -46,14 +47,14 @@ class _MovieSimilerState extends State<MovieSimiler> {
           return Center(
             child: Text(
               snap.data?.statusMessage ?? "",
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white),
             ),
           );
         }
         List<Movies> movieList = snap.data?.data?.movies ?? [];
 
         return Container(
-            width: 170,
+            width: SizeConfig.w(context, 170),
             child: MovieCard(
               movie: movieList[index],
             ));

@@ -40,6 +40,7 @@ class AppAssets {
   static const String favorite = 'assets/images/favorite.png';
   static const String play = 'assets/images/play.png';
   static const String save = 'assets/images/save.png';
+  static const String mainLay = 'assets/images/mainLay.png';
 
   static const List<String> listUpdatProfile = [
     'assets/images/avatar_1.png',

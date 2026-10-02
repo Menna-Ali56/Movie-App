@@ -14,6 +14,7 @@ import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:movie_app/utils/firebase_utils.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class MovieDetailsScreen extends StatefulWidget {
   final Movies movie;
@@ -104,7 +105,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     },
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: SizeConfig.all(context, 8),
                     child: Row(
                       children: [
                         Expanded(
@@ -125,7 +126,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: SizeConfig.h(context, 5)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -149,35 +150,30 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
-                  const MovieDetailsSectionTitle(
+                  SizedBox(height: SizeConfig.h(context, 5)),
+                  MovieDetailsSectionTitle(
                     title: 'Screen Shots',
-                    padding: EdgeInsets.only(left: 10, top: 15, bottom: 15),
+                    padding: SizeConfig.only(context, left: 10, top: 15, bottom: 15),
                   ),
                   Container(
-                    height: 200,
+                    height: SizeConfig.h(context, 200),
                     width: double.infinity,
-                    margin: const EdgeInsets.only(right: 10, left: 10),
+                    margin: SizeConfig.only(context, right: 10, left: 10),
                     clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: SizeConfig.circular(context, 20),
                     ),
                     child: Image.network(
                       detailMovie.backgroundImage ?? '',
                       fit: BoxFit.cover,
                     ),
                   ),
-                  const MovieDetailsSectionTitle(
+                  MovieDetailsSectionTitle(
                     title: 'Similar ',
-                    padding: EdgeInsets.only(left: 10, top: 15, bottom: 5),
+                    padding: SizeConfig.only(context, left: 10, top: 15, bottom: 5),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                      right: 12,
-                      left: 12,
-                      top: 10,
-                      bottom: 5,
-                    ),
+                    padding: SizeConfig.only(context, right: 12, left: 12, top: 10, bottom: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -185,13 +181,13 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       ],
                     ),
                   ),
-                  const MovieDetailsSectionTitle(
+                  MovieDetailsSectionTitle(
                     title: 'Summary ',
-                    padding: EdgeInsets.only(left: 10, top: 10, bottom: 10),
+                    padding: SizeConfig.only(context, left: 10, top: 10, bottom: 10),
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(right: 12, left: 12, bottom: 5),
+                        SizeConfig.only(context, right: 12, left: 12, bottom: 5),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -202,30 +198,20 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       ],
                     ),
                   ),
-                  const MovieDetailsSectionTitle(
+                  MovieDetailsSectionTitle(
                     title: 'Cast',
-                    padding: EdgeInsets.only(left: 10, top: 10, bottom: 5),
+                    padding: SizeConfig.only(context, left: 10, top: 10, bottom: 5),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                      right: 10,
-                      left: 10,
-                      top: 10,
-                      bottom: 5,
-                    ),
+                    padding: SizeConfig.only(context, right: 10, left: 10, top: 10, bottom: 5),
                     child: CastCart(movie: widget.movie),
                   ),
-                  const MovieDetailsSectionTitle(
+                  MovieDetailsSectionTitle(
                     title: 'Genres',
-                    padding: EdgeInsets.only(left: 10, top: 10, bottom: 5),
+                    padding: SizeConfig.only(context, left: 10, top: 10, bottom: 5),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                      right: 12,
-                      left: 12,
-                      top: 5,
-                      bottom: 20,
-                    ),
+                    padding: SizeConfig.only(context, right: 12, left: 12, top: 5, bottom: 20),
                     child: SizedBox(
                       width: double.infinity,
                       child: MovieGenreChips(genres: detailMovie.genres ?? []),
@@ -241,7 +227,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   Widget _buildLoadingState() {
-    return const Center(
+    return Center(
       child: CircularProgressIndicator(
         color: AppColors.yellow,
       ),
@@ -249,7 +235,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   Widget _buildErrorState() {
-    return const Center(
+    return Center(
       child: Text(
         'Something went wrong',
         style: TextStyle(color: Colors.white),
@@ -261,7 +247,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     return Center(
       child: Text(
         snap.data?.statusMessage ?? '',
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white),
       ),
     );
   }
