@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/models/movie_details_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/bloc/detailes/details_bloc.dart';
+import 'package:movie_app/bloc/detailes/details_event.dart';
+import 'package:movie_app/bloc/detailes/details_state.dart';
 import 'package:movie_app/models/movie_model.dart';
-import 'package:movie_app/ui/screens/home/apis/api_movie_details.dart';
 import 'package:movie_app/ui/screens/home/tabs/movie_details/movie_similer.dart';
-import 'package:movie_app/ui/screens/home/widgets/cast_cart.dart';
+import 'package:movie_app/ui/screens/home/tabs/movie_details/widgets/cast_cart.dart';
 import 'package:movie_app/ui/screens/home/tabs/movie_details/widgets/movie_details_header.dart';
 import 'package:movie_app/ui/screens/home/tabs/movie_details/widgets/movie_details_section_title.dart';
 import 'package:movie_app/ui/screens/home/tabs/movie_details/widgets/movie_genre_chips.dart';
@@ -26,13 +28,11 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
-  late Future<MovieDetailsModel> movieDetails;
   bool isSave = false;
   bool showTrailer = false;
   @override
   void initState() {
     super.initState();
-    movieDetails = ApiMovieDetails.getDetails(widget.movie.id!, true);
     _addToHistory();
   }
 
@@ -51,30 +51,40 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: AppColors.transparentColor,
-        body: SingleChildScrollView(
-          child: FutureBuilder<MovieDetailsModel>(
-            future: movieDetails,
-            builder: (context, snap) {
-              if (snap.connectionState == ConnectionState.waiting) {
-                return _buildLoadingState();
-              }
-              if (snap.hasError) {
-                return _buildErrorState();
-              }
-              if (snap.data?.status != 'ok') {
-                return _buildStatusState(snap);
-              }
+    return BlocProvider(
+      create: (context) =>
+          DetailsBloc()..add(GetDetailsEvent(id: widget.movie.id!)),
+      child: BlocBuilder<DetailsBloc, DetailsState>(builder: (context, state) {
+        if (state.status == DetailsStatus.loading) {
+          return Center(
+              child: CircularProgressIndicator(
+            color: AppColors.yellow,
+          ));
+        }
+        if (state.status == DetailsStatus.error) {
+          return Center(
+              child: Text(
+            "Something went wrong",
+            style: TextStyle(color: Colors.white),
+          ));
+        }
 
-              final movie = snap.data!;
-              final detailMovie = movie.data?.movie;
-              if (detailMovie == null) {
-                return _buildErrorState();
-              }
+        if (state.status == DetailsStatus.success) {
+          final detailMovie = state.movieDetails?.data?.movie;
+          if (detailMovie == null) {
+            return Center(
+              child: Text(
+                "Something went wrong",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
 
-              return Column(
+          return SafeArea(
+            child: Scaffold(
+              backgroundColor: AppColors.transparentColor,
+              body: SingleChildScrollView(
+                  child: Column(
                 children: [
                   MovieDetailsHeader(
                     movie: detailMovie,
@@ -153,7 +163,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   SizedBox(height: SizeConfig.h(context, 5)),
                   MovieDetailsSectionTitle(
                     title: 'Screen Shots',
-                    padding: SizeConfig.only(context, left: 10, top: 15, bottom: 15),
+                    padding:
+                        SizeConfig.only(context, left: 10, top: 15, bottom: 15),
                   ),
                   Container(
                     height: SizeConfig.h(context, 200),
@@ -170,10 +181,12 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   ),
                   MovieDetailsSectionTitle(
                     title: 'Similar ',
-                    padding: SizeConfig.only(context, left: 10, top: 15, bottom: 5),
+                    padding:
+                        SizeConfig.only(context, left: 10, top: 15, bottom: 5),
                   ),
                   Padding(
-                    padding: SizeConfig.only(context, right: 12, left: 12, top: 10, bottom: 5),
+                    padding: SizeConfig.only(context,
+                        right: 12, left: 12, top: 10, bottom: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -183,11 +196,12 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   ),
                   MovieDetailsSectionTitle(
                     title: 'Summary ',
-                    padding: SizeConfig.only(context, left: 10, top: 10, bottom: 10),
+                    padding:
+                        SizeConfig.only(context, left: 10, top: 10, bottom: 10),
                   ),
                   Padding(
-                    padding:
-                        SizeConfig.only(context, right: 12, left: 12, bottom: 5),
+                    padding: SizeConfig.only(context,
+                        right: 12, left: 12, bottom: 5),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -200,55 +214,34 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   ),
                   MovieDetailsSectionTitle(
                     title: 'Cast',
-                    padding: SizeConfig.only(context, left: 10, top: 10, bottom: 5),
+                    padding:
+                        SizeConfig.only(context, left: 10, top: 10, bottom: 5),
                   ),
                   Padding(
-                    padding: SizeConfig.only(context, right: 10, left: 10, top: 10, bottom: 5),
-                    child: CastCart(movie: widget.movie),
+                    padding: SizeConfig.only(context,
+                        right: 10, left: 10, top: 10, bottom: 5),
+                    child: CastCart(),
                   ),
                   MovieDetailsSectionTitle(
                     title: 'Genres',
-                    padding: SizeConfig.only(context, left: 10, top: 10, bottom: 5),
+                    padding:
+                        SizeConfig.only(context, left: 10, top: 10, bottom: 5),
                   ),
                   Padding(
-                    padding: SizeConfig.only(context, right: 12, left: 12, top: 5, bottom: 20),
+                    padding: SizeConfig.only(context,
+                        right: 12, left: 12, top: 5, bottom: 20),
                     child: SizedBox(
                       width: double.infinity,
                       child: MovieGenreChips(genres: detailMovie.genres ?? []),
                     ),
                   ),
                 ],
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoadingState() {
-    return Center(
-      child: CircularProgressIndicator(
-        color: AppColors.yellow,
-      ),
-    );
-  }
-
-  Widget _buildErrorState() {
-    return Center(
-      child: Text(
-        'Something went wrong',
-        style: TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
-  Widget _buildStatusState(AsyncSnapshot<MovieDetailsModel> snap) {
-    return Center(
-      child: Text(
-        snap.data?.statusMessage ?? '',
-        style: TextStyle(color: Colors.white),
-      ),
+              )),
+            ),
+          );
+        }
+        return const SizedBox();
+      }),
     );
   }
 }

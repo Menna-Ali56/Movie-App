@@ -4,17 +4,12 @@ import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/ui/screens/home/size_config.dart';
 
-class MovieGenreScreen extends StatefulWidget {
+class MovieGenreScreen extends StatelessWidget {
   final List<Movies> movies;
   final String genre;
   const MovieGenreScreen(
       {super.key, required this.movies, required this.genre});
 
-  @override
-  State<MovieGenreScreen> createState() => _MovieGenreScreenState();
-}
-
-class _MovieGenreScreenState extends State<MovieGenreScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -29,7 +24,7 @@ class _MovieGenreScreenState extends State<MovieGenreScreen> {
               Navigator.pop(context);
             },
             child: Padding(
-            padding: SizeConfig.only(context, left: 8),
+              padding: SizeConfig.only(context, left: 8),
               child: Icon(
                 Icons.arrow_back_ios,
                 color: AppColors.white,
@@ -37,14 +32,14 @@ class _MovieGenreScreenState extends State<MovieGenreScreen> {
             ),
           ),
           title: Text(
-            widget.genre,
+            genre,
             style: TextStyle(color: AppColors.white),
           ),
         ),
         body: Padding(
           padding: SizeConfig.all(context, 8),
           child: GridView.builder(
-            itemCount: widget.movies.length,
+            itemCount: movies.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: SizeConfig.w(context, 8),
@@ -53,7 +48,7 @@ class _MovieGenreScreenState extends State<MovieGenreScreen> {
             ),
             itemBuilder: (context, index) {
               return MovieCard(
-                movie: widget.movies[index],
+                movie: movies[index],
               );
             },
           ),
