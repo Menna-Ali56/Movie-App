@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:movie_app/l10n/app_localizations.dart';
-import 'package:movie_app/provider/user_provider.dart';
 import 'package:movie_app/ui/screens/Auth/register/register_screen.dart';
 import 'package:movie_app/ui/screens/Auth/reset_password/reset_password.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:movie_app/ui/screens/home/tabs/movieGenre/movie_genre_screen.dart';
-import 'package:provider/provider.dart';
+
+
 import 'bloc/language/language_state.dart';
+import 'bloc/profile/proflie_bloc.dart';
 import 'firebase_options.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/bloc/language/language_bloc.dart';
+import 'package:movie_app/bloc/user/user_bloc.dart';
 
 import 'ui/screens/Auth/login/login_screen.dart';
 
@@ -30,22 +32,27 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
     debugPrint("🔥 Firebase initialized successfully");
   } catch (e) {
     debugPrint("🔥 Firebase ERROR: $e");
   }
 
   runApp(
-    MultiProvider(
+    MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (BuildContext context) => UserProvider(),
+        BlocProvider(
+          create: (context) => LanguageBloc(),
         ),
+        BlocProvider(
+          create: (context) => UserBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ProfileBloc(),
+        ),
+
       ],
-      child: BlocProvider(
-        create: (context) => LanguageBloc(),
-        child: const MyApp(),
-      ),
+      child: const MyApp(),
     ),
   );
 }
@@ -67,7 +74,7 @@ class MyApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
-          initialRoute: AppRoutes.bottom_bar,
+          initialRoute: AppRoutes.onboarding,
           routes: {
             AppRoutes.onboarding: (context) => const OnboardingScreen(),
             AppRoutes.login_screen: (context) => LoginScreen(),

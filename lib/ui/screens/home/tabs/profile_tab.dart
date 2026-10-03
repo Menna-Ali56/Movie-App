@@ -1,17 +1,29 @@
+
+
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:movie_app/bloc/profile/profile_event.dart';
+import 'package:movie_app/bloc/profile/profile_state.dart';
+
+import 'package:movie_app/bloc/user/user_bloc.dart';
+import 'package:movie_app/bloc/user/user_state.dart';
+import 'package:movie_app/bloc/user/user_event.dart';
+
+import 'package:movie_app/l10n/app_localizations.dart';
+import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 import 'package:movie_app/ui/widgets/custom_elevated_button.dart';
+import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
+
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
-import 'package:provider/provider.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../../provider/user_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:movie_app/models/movie_model.dart';
-import 'package:movie_app/utils/firebase_utils.dart';
-import '../widgets/movie_card.dart';
-import 'package:movie_app/ui/screens/home/size_config.dart';
+
+import '../../../../bloc/profile/proflie_bloc.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
@@ -21,285 +33,599 @@ class ProfileTab extends StatefulWidget {
 }
 
 class _ProfileTabState extends State<ProfileTab> {
-  Future<List<Movies>>? historyFuture;
   @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-    var userProvider=Provider.of<UserProvider>(context);
+  void initState() {
+    super.initState();
+
     final user = FirebaseAuth.instance.currentUser;
 
-    historyFuture ??= user == null
-        ? null
-        : FireBaseUtils.getHistory(user.uid);
+    if (user != null) {
+      context.read<ProfileBloc>().add(
+        LoadProfileEvent(user.uid),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations =
+    AppLocalizations.of(context)!;
+
+    final userState =
+        context.watch<UserBloc>().state;
+
+    final user =
+        FirebaseAuth.instance.currentUser;
+
     return SafeArea(
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
-          backgroundColor: const Color.fromRGBO(40, 42, 40, 1),
-          body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding:
-                        SizeConfig.only(context, top: 24, left: 24, right: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+          backgroundColor:
+          const Color.fromRGBO(40, 42, 40, 1),
+          body: BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, profileState) {
+              return NestedScrollView(
+                headerSliverBuilder:
+                    (context, innerBoxIsScrolled) {
+                  return [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: SizeConfig.only(
+                          context,
+                          top: 24,
+                          left: 24,
+                          right: 10,
+                        ),
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
                           children: [
-                            Column(
+                            Row(
                               children: [
-                                Image.asset(
-                                  AppAssets.avatar_1,
-                                  height: SizeConfig.h(context, 100),
-                                  width: SizeConfig.w(context, 100),
+                                // =========================
+                                // PROFILE IMAGE + NAME
+                                // =========================
+                                Column(
+                                  children: [
+                                    Image.asset(
+                                      AppAssets.avatar_1,
+                                      height: SizeConfig.h(
+                                        context,
+                                        100,
+                                      ),
+                                      width: SizeConfig.w(
+                                        context,
+                                        100,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: SizeConfig.h(
+                                        context,
+                                        15,
+                                      ),
+                                    ),
+                                    Text(
+                                      userState
+                                      is UserSuccess
+                                          ? userState.user.name
+                                          : '',
+                                      style: AppStyles
+                                          .roboto20White500,
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(
-                                  height: SizeConfig.h(context, 15),
+
+                                // =========================
+                                // WISH LIST COUNT
+                                // =========================
+                                Padding(
+                                  padding: SizeConfig.only(
+                                    context,
+                                    left: 20,
+                                    right: 15,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      _buildWishListCount(
+                                        profileState,
+                                      ),
+                                      SizedBox(
+                                        height:
+                                        SizeConfig.h(
+                                          context,
+                                          10,
+                                        ),
+                                      ),
+                                       Text(
+                                        'Wish List',
+                                        style: AppStyles
+                                            .regular20White,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                  userProvider.currentUser!.name,
-                                  style: AppStyles.roboto20White500,
-                                )
+
+                                // =========================
+                                // HISTORY COUNT
+                                // =========================
+                                Column(
+                                  children: [
+                                    _buildHistoryCount(
+                                      profileState,
+                                    ),
+                                    SizedBox(
+                                      height:
+                                      SizeConfig.h(
+                                        context,
+                                        10,
+                                      ),
+                                    ),
+                                    Text(
+                                      localizations.history,
+                                      style: AppStyles
+                                          .regular20White,
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
+
+                            // =========================
+                            // EDIT PROFILE + LOGOUT
+                            // =========================
                             Padding(
-                              padding:
-                                SizeConfig.only(context, left: 20, right: 25),
-                              child: Column(
+                              padding: SizeConfig.only(
+                                context,
+                                top: 24,
+                                right: 10,
+                                bottom: 24,
+                              ),
+                              child: Row(
                                 children: [
-                                  Text(
-                                    "12",
-                                    style: AppStyles.bold24White,
+                                  // EDIT PROFILE
+                                  Expanded(
+                                    flex: 2,
+                                    child:
+                                    CustomElevatedButton(
+                                      backgroundColor:
+                                      AppColors.yellow,
+                                      radius:
+                                      SizeConfig.w(
+                                        context,
+                                        15,
+                                      ),
+                                      verticalPadding:
+                                      SizeConfig.h(
+                                        context,
+                                        15,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          AppRoutes
+                                              .update_profile,
+                                        );
+                                      },
+                                      child: Text(
+                                        localizations
+                                            .edit_profile,
+                                        style: AppStyles
+                                            .regular20DarkGray,
+                                      ),
+                                    ),
                                   ),
+
                                   SizedBox(
-                                    height: SizeConfig.h(context, 10),
+                                    width: SizeConfig.w(
+                                      context,
+                                      10,
+                                    ),
                                   ),
-                                  Text(
-                                    localizations.wish_list,
-                                    style: AppStyles.regular20White,
+
+                                  // LOGOUT
+                                  Expanded(
+                                    flex: 1,
+                                    child:
+                                    CustomElevatedButton(
+                                      backgroundColor:
+                                      AppColors.red,
+                                      radius:
+                                      SizeConfig.w(
+                                        context,
+                                        15,
+                                      ),
+                                      verticalPadding:
+                                      SizeConfig.h(
+                                        context,
+                                        15,
+                                      ),
+                                      onPressed: () async {
+                                        await FirebaseAuth
+                                            .instance
+                                            .signOut();
+
+                                        if (!context.mounted) {
+                                          return;
+                                        }
+
+                                        context
+                                            .read<UserBloc>()
+                                            .add(
+                                          ClearUserEvent(),
+                                        );
+
+                                        Navigator
+                                            .pushNamedAndRemoveUntil(
+                                          context,
+                                          AppRoutes
+                                              .login_screen,
+                                              (route) => false,
+                                        );
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment
+                                            .center,
+                                        children: [
+                                          Text(
+                                            localizations.exit,
+                                            style: AppStyles
+                                                .regular20White,
+                                          ),
+                                          SizedBox(
+                                            width:
+                                            SizeConfig.w(
+                                              context,
+                                              8,
+                                            ),
+                                          ),
+                                          const Icon(
+                                            Icons
+                                                .exit_to_app_outlined,
+                                            color:
+                                            AppColors.white,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                            Column(
-                              children: [
-                                FutureBuilder<List<Movies>>(
-                                  future: historyFuture,
-                                  builder: (context, snapshot) {
-                                    final historyCount = snapshot.data?.length ?? 0;
-
-                                    return Text(
-                                      historyCount.toString(),
-                                      style: AppStyles.bold24White,
-                                    );
-                                  },
-                                ),
-                                SizedBox(
-                                  height: SizeConfig.h(context, 10),
-                                ),
-                                Text(
-                                  localizations.history,
-                                  style: AppStyles.regular20White,
-                                ),
-                              ],
-                            )
                           ],
                         ),
-                        Padding(
-                          padding: SizeConfig.only(context, top: 24, right: 10, bottom: 24),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: CustomElevatedButton(
-                                  backgroundColor: AppColors.yellow,
-                                  radius: SizeConfig.w(context, 15),
-                                  verticalPadding: SizeConfig.h(context, 15),
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      AppRoutes.update_profile,
-                                    );
-                                  },
-                                  child: Text(
-                                    localizations.edit_profile,
-                                    style: AppStyles.regular20DarkGray,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                              width: SizeConfig.w(context, 10),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: CustomElevatedButton(
-                                  backgroundColor: AppColors.red,
-                                  radius: SizeConfig.w(context, 15),
-                                  verticalPadding: SizeConfig.h(context, 15),
-                                  onPressed:
-                                     () async {
-                                      await FirebaseAuth.instance.signOut();
-
-                                      if (!context.mounted) return;
-
-                                      Navigator.pushNamedAndRemoveUntil(
-                                        context,
-                                        AppRoutes.login_screen,
-                                            (route) => false,
-                                      );
-                                    },
-
-
-                                  child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      localizations.exit,
-                                      style: AppStyles.regular20White,
-                                    ),
-                                    SizedBox(width: SizeConfig.w(context, 8)),
-                                   Icon(Icons.exit_to_app_outlined,color: AppColors.white,)
-                                  ],
-                                ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SliverPersistentHeader(
-                    pinned: true,
-                    delegate: _SliverTabBarDelegate(TabBar(
-                        indicatorColor: AppColors.yellow,
-                        dividerColor: AppColors.transparentColor,
-                        unselectedLabelColor: AppColors.transparentColor,
-                        tabs: [
-                          Tab(
-                            child: Column(
-                              children: [
-                                const Icon(
-                                  Icons.list,
-                                  color: AppColors.yellow,
-                                ),
-                                Text(
-                                  localizations.watch_list,
-                                  style: AppStyles.regular14White,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Tab(
-                            child: Column(
-                              children: [
-                                const Icon(
-                                  Icons.folder,
-                                  color: AppColors.yellow,
-                                ),
-                                Text(
-                                  localizations.history,
-                                  style: AppStyles.regular14White,
-                                ),
-                              ],
-                            ),
-                          )
-                        ]))),
-              ];
-            },
-            body: TabBarView(children: [
-              Container(
-                color: AppColors.black2,
-                child: Center(
-                  child: Image.asset(AppAssets.emtySearch),
-                ),
-              ),
-
-              Container(
-                color: AppColors.black2,
-                child: user == null
-                    ? Center(
-                  child: Text(
-                    "Please login first",
-                    style: AppStyles.regular16White,
-                  ),
-                )
-                    : FutureBuilder<List<Movies>>(
-                  future: FireBaseUtils.getHistory(user.uid),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.yellow,
-                        ),
-                      );
-                    }
-
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          "Something went wrong",
-                          style: AppStyles.regular16White,
-                        ),
-                      );
-                    }
-
-                    final history = snapshot.data ?? [];
-
-                    if (history.isEmpty) {
-                      return Center(
-                        child: Image.asset(AppAssets.emtySearch),
-                      );
-                    }
-
-                    return GridView.builder(
-                      padding: SizeConfig.all(context, 10),
-                      gridDelegate:
-                      SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.7,
-                        crossAxisSpacing: SizeConfig.w(context, 12),
-                        mainAxisSpacing: SizeConfig.h(context, 12),
                       ),
-                      itemCount: history.length,
-                      itemBuilder: (context, index) {
-                        return MovieCard(
-                          movie: history[index],
-                        );
-                      },
-                    );
-                  },
+                    ),
+
+                    // =========================
+                    // TABS
+                    // =========================
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate:
+                      _SliverTabBarDelegate(
+                        TabBar(
+                          indicatorColor:
+                          AppColors.yellow,
+                          dividerColor:
+                          AppColors.transparentColor,
+                          unselectedLabelColor:
+                          AppColors.transparentColor,
+                          tabs: [
+                            // WATCH LIST
+                            Tab(
+                              child: Column(
+                                children: [
+                                  const Icon(
+                                    Icons.list,
+                                    color:
+                                    AppColors.yellow,
+                                  ),
+                                  Text(
+                                    localizations
+                                        .watch_list,
+                                    style: AppStyles
+                                        .regular14White,
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // HISTORY
+                            Tab(
+                              child: Column(
+                                children: [
+                                  const Icon(
+                                    Icons.folder,
+                                    color:
+                                    AppColors.yellow,
+                                  ),
+                                  Text(
+                                    localizations.history,
+                                    style: AppStyles
+                                        .regular14White,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ];
+                },
+
+                // =========================
+                // TAB CONTENT
+                // =========================
+                body: _buildTabView(
+                  user: user,
+                  profileState: profileState,
                 ),
-              ),
-            ]),
+              );
+            },
           ),
         ),
       ),
     );
   }
+
+  // =========================
+  // WISH LIST COUNT
+  // =========================
+  Widget _buildWishListCount(
+      ProfileState state,
+      ) {
+    if (state is ProfileLoading) {
+      return const SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(
+          color: AppColors.yellow,
+          strokeWidth: 2,
+        ),
+      );
+    }
+
+    if (state is ProfileSuccess) {
+      return Text(
+        state.wishListCount.toString(),
+        style: AppStyles.bold24White,
+      );
+    }
+
+    return Text(
+      '0',
+      style: AppStyles.bold24White,
+    );
+  }
+
+  // =========================
+  // HISTORY COUNT
+  // =========================
+  Widget _buildHistoryCount(
+      ProfileState state,
+      ) {
+    if (state is ProfileLoading) {
+      return const SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(
+          color: AppColors.yellow,
+          strokeWidth: 2,
+        ),
+      );
+    }
+
+    if (state is ProfileSuccess) {
+      return Text(
+        state.history.length.toString(),
+        style: AppStyles.bold24White,
+      );
+    }
+
+    return Text(
+      '0',
+      style: AppStyles.bold24White,
+    );
+  }
+
+  // =========================
+  // TAB VIEW
+  // =========================
+  Widget _buildTabView({
+    required User? user,
+    required ProfileState profileState,
+  }) {
+    if (user == null) {
+      return TabBarView(
+        children: [
+          Container(
+            color: AppColors.black2,
+            child: _loginMessage(),
+          ),
+          Container(
+            color: AppColors.black2,
+            child: _loginMessage(),
+          ),
+        ],
+      );
+    }
+
+    if (profileState is ProfileLoading ||
+        profileState is ProfileInitial) {
+      return const TabBarView(
+        children: [
+          Center(
+            child: CircularProgressIndicator(
+              color: AppColors.yellow,
+            ),
+          ),
+          Center(
+            child: CircularProgressIndicator(
+              color: AppColors.yellow,
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (profileState is ProfileError) {
+      return TabBarView(
+        children: [
+          Container(
+            color: AppColors.black2,
+            child: _errorMessage(),
+          ),
+          Container(
+            color: AppColors.black2,
+            child: _errorMessage(),
+          ),
+        ],
+      );
+    }
+
+    if (profileState is ProfileSuccess) {
+      return TabBarView(
+        children: [
+          // =========================
+          // WATCH LIST
+          // =========================
+          Container(
+            color: AppColors.black2,
+            child: profileState.watchList.isEmpty
+                ? _emptyImage()
+                : _movieGrid(
+              profileState.watchList,
+            ),
+          ),
+
+          // =========================
+          // HISTORY
+          // =========================
+          Container(
+            color: AppColors.black2,
+            child: profileState.history.isEmpty
+                ? _emptyImage()
+                : _movieGrid(
+              profileState.history,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return const TabBarView(
+      children: [
+        SizedBox(),
+        SizedBox(),
+      ],
+    );
+  }
+
+  // =========================
+  // MOVIE GRID
+  // =========================
+  Widget _movieGrid(List<Movies> movies) {
+    return GridView.builder(
+      padding: SizeConfig.all(
+        context,
+        10,
+      ),
+      gridDelegate:
+      SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.7,
+        crossAxisSpacing:
+        SizeConfig.w(
+          context,
+          12,
+        ),
+        mainAxisSpacing:
+        SizeConfig.h(
+          context,
+          12,
+        ),
+      ),
+      itemCount: movies.length,
+      itemBuilder: (context, index) {
+        return MovieCard(
+          movie: movies[index],
+        );
+      },
+    );
+  }
+
+  // =========================
+  // EMPTY
+  // =========================
+  Widget _emptyImage() {
+    return Center(
+      child: Image.asset(
+        AppAssets.emtySearch,
+      ),
+    );
+  }
+
+  // =========================
+  // LOGIN MESSAGE
+  // =========================
+  Widget _loginMessage() {
+    return Center(
+      child: Text(
+        "Please login first",
+        style: AppStyles.regular16White,
+      ),
+    );
+  }
+
+  // =========================
+  // ERROR MESSAGE
+  // =========================
+  Widget _errorMessage() {
+    return Center(
+      child: Text(
+        "Something went wrong",
+        style: AppStyles.regular16White,
+      ),
+    );
+  }
 }
 
-class _SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
+// =========================
+// SLIVER TAB BAR DELEGATE
+// =========================
+class _SliverTabBarDelegate
+    extends SliverPersistentHeaderDelegate {
   final TabBar tabBar;
+
   _SliverTabBarDelegate(this.tabBar);
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+      BuildContext context,
+      double shrinkOffset,
+      bool overlapsContent,
+      ) {
     return Container(
+      color: AppColors.black2,
       child: tabBar,
     );
   }
 
   @override
-  double get maxExtent => tabBar.preferredSize.height;
+  double get maxExtent =>
+      tabBar.preferredSize.height;
+
   @override
-  double get minExtent => tabBar.preferredSize.height;
+  double get minExtent =>
+      tabBar.preferredSize.height;
+
   @override
-  bool shouldRebuild(covariant _SliverTabBarDelegate oldDelegate) {
+  bool shouldRebuild(
+      covariant _SliverTabBarDelegate oldDelegate,
+      ) {
     return false;
   }
 }
