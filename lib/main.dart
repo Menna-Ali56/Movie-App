@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 
 import 'bloc/language/language_state.dart';
+import 'bloc/profile/proflie_bloc.dart';
 import 'firebase_options.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,6 +47,10 @@ void main() async {
         BlocProvider(
           create: (context) => UserBloc(),
         ),
+        BlocProvider(
+          create: (context) => ProfileBloc(),
+        ),
+
       ],
       child: const MyApp(),
     ),
