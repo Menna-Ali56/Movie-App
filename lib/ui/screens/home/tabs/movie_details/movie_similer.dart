@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/models/movie_model.dart';
-import 'package:movie_app/models/movie_suggestion_model.dart';
-import 'package:movie_app/ui/screens/home/apis/api_movie_suggestion.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/bloc/suggection/suggection_block.dart';
+import 'package:movie_app/bloc/suggection/suggection_event.dart';
+import 'package:movie_app/bloc/suggection/suggection_state.dart';
 import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
 import 'package:movie_app/ui/screens/home/size_config.dart';
 
-class MovieSimiler extends StatefulWidget {
+class MovieSimiler extends StatelessWidget {
   final int movieId;
   MovieSimiler({
     super.key,
@@ -13,52 +14,40 @@ class MovieSimiler extends StatefulWidget {
   });
 
   @override
-  State<MovieSimiler> createState() => _MovieSimilerState();
-}
-
-class _MovieSimilerState extends State<MovieSimiler> {
-  late Future<MovieSuggestions> movies;
-  int index = 0;
-  @override
-  void initState() {
-    super.initState();
-    movies = ApiMovieSuggestion.getApi(
-      widget.movieId,
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: movies,
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (snap.hasError) {
-          return Center(
-            child: Text(
-              "Something went wrong",
-              style: TextStyle(color: Colors.white),
-            ),
-          );
-        }
-        if (snap.data?.status != 'ok') {
-          return Center(
-            child: Text(
-              snap.data?.statusMessage ?? "",
-              style: TextStyle(color: Colors.white),
-            ),
-          );
-        }
-        List<Movies> movieList = snap.data?.data?.movies ?? [];
-
-        return Container(
-            width: SizeConfig.w(context, 170),
-            child: MovieCard(
-              movie: movieList[index],
+    return BlocProvider(
+        create: (context) =>
+            SuggectionBlock()..add(GetSuggectionEvent(movieId: movieId)),
+        child: BlocBuilder<SuggectionBlock, SuggectionState>(
+            builder: (context, state) {
+          if (state.status == SuggectionStatus.loading) {
+            return Center(
+                child: CircularProgressIndicator(
+              color: Colors.yellow,
             ));
-      },
-    );
+          }
+          if (state.status == SuggectionStatus.error) {
+            return Center(
+              child: Text(
+                "Something went wrong",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+          final movieList = state.movieSuggection?.data?.movies ?? [];
+          if (movieList.isEmpty) {
+            return Center(
+              child: Text(
+                "No similar movies found",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+          return Container(
+              width: SizeConfig.w(context, 170),
+              child: MovieCard(
+                movie: movieList[0],
+              ));
+        }));
   }
 }

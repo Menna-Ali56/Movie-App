@@ -1,58 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/models/movie_details_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/bloc/detailes/details_bloc.dart';
+import 'package:movie_app/bloc/detailes/details_state.dart';
 import 'package:movie_app/models/movie_model.dart';
-import 'package:movie_app/ui/screens/home/apis/api_movie_details.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_styles.dart';
 import 'package:movie_app/ui/screens/home/size_config.dart';
 
-class CastCart extends StatefulWidget {
-  final Movies movie;
-  CastCart({super.key, required this.movie});
-
-  @override
-  State<CastCart> createState() => _CastCartState();
-}
-
-class _CastCartState extends State<CastCart> {
-  int index = 0;
-
-  late Future<MovieDetailsModel> movieDetails;
-
-  @override
-  void initState() {
-    movieDetails = ApiMovieDetails.getDetails(widget.movie.id!, true);
-    super.initState();
-  }
+class CastCart extends StatelessWidget {
+  CastCart({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<MovieDetailsModel>(
-        future: movieDetails,
-        builder: (context, snap) {
-          if (snap.connectionState == ConnectionState.waiting) {
-            return Center(
-                child: CircularProgressIndicator(
-              color: AppColors.yellow,
-            ));
-          }
-          if (snap.hasError) {
-            return Center(
-              child: Text(
-                "Something went wrong",
-                style: TextStyle(color: Colors.white),
-              ),
-            );
-          }
-          if (snap.data?.status != 'ok') {
-            return Center(
-              child: Text(
-                snap.data?.statusMessage ?? "",
-                style: TextStyle(color: Colors.white),
-              ),
-            );
-          }
-          final cast = snap.data?.data?.movie?.cast ?? [];
+    return BlocConsumer<DetailsBloc, DetailsState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state.status == DetailsStatus.loading) {
+          return Center(
+              child: CircularProgressIndicator(
+            color: AppColors.yellow,
+          ));
+        }
+        if (state.status == DetailsStatus.error) {
+          return Center(
+              child: Text("Something went wrong",
+                  style: TextStyle(color: Colors.white)));
+        }
+
+        if (state.status == DetailsStatus.success) {
+          final cast = state.movieDetails?.data?.movie?.cast ?? [];
 
           return GridView.builder(
               shrinkWrap: true,
@@ -70,7 +46,8 @@ class _CastCartState extends State<CastCart> {
                   decoration: BoxDecoration(
                       color: AppColors.darkGray.withValues(alpha: 0.75),
                       borderRadius: SizeConfig.circular(context, 16)),
-                  padding: SizeConfig.symmetric(context, vertical: 6, horizontal: 8),
+                  padding:
+                      SizeConfig.symmetric(context, vertical: 6, horizontal: 8),
                   child: Row(
                     children: [
                       if (actor.urlSmallImage != null &&
@@ -119,6 +96,9 @@ class _CastCartState extends State<CastCart> {
                   ),
                 );
               });
-        });
+        }
+        return const SizedBox();
+      },
+    );
   }
 }
