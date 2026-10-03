@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:movie_app/l10n/app_localizations.dart';
-import 'package:movie_app/ui/screens/Auth/register/register_screen.dart';
-import 'package:movie_app/ui/screens/Auth/reset_password/reset_password.dart';
+import 'package:movie_app/presentation/bloc/language/language_bloc.dart';
+import 'package:movie_app/presentation/bloc/language/language_state.dart';
+import 'package:movie_app/presentation/bloc/profile/proflie_bloc.dart';
+import 'package:movie_app/presentation/bloc/user/user_bloc.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:movie_app/presentation/screens/Auth/login/login_screen.dart';
+import 'package:movie_app/presentation/screens/Auth/register/register_screen.dart';
+import 'package:movie_app/presentation/screens/Auth/reset_password/reset_password.dart';
+import 'package:movie_app/presentation/screens/home/tabs/home_screen.dart';
+import 'package:movie_app/presentation/screens/home/tabs/profile_tab.dart';
+import 'package:movie_app/presentation/screens/home/tabs/update_profile/update_profile.dart';
+import 'package:movie_app/presentation/screens/home/widgets/bottom_bar.dart';
+import 'package:movie_app/presentation/screens/onboarding/onboarding_screen.dart';
 
 
-import 'bloc/language/language_state.dart';
-import 'bloc/profile/proflie_bloc.dart';
+
 import 'firebase_options.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_app/bloc/language/language_bloc.dart';
-import 'package:movie_app/bloc/user/user_bloc.dart';
 
-import 'ui/screens/Auth/login/login_screen.dart';
 
-import 'package:movie_app/ui/screens/home/tabs/profile_tab.dart';
-import 'package:movie_app/ui/screens/home/tabs/update_profile/update_profile.dart';
-import 'package:movie_app/ui/screens/home/widgets/bottom_bar.dart';
 
-import 'ui/screens/home/tabs/home_screen.dart';
-import 'ui/screens/onboarding/onboarding_screen.dart';
-import 'utils/app_routes.dart';
+import 'core/routes/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
