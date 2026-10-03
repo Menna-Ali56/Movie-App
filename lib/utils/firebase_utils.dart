@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/movie_model.dart';
 import '../models/my_user.dart';
@@ -85,5 +86,30 @@ class FireBaseUtils {
       'poster': movie.mediumCoverImage,
       'rating': movie.rating,
     });
+  }
+
+  static Future<void> addMovieToSave(
+      {required String userId, required Movies movie}) async {
+    await FirebaseFirestore.instance
+        .collection(MyUser.collectionName)
+        .doc(userId)
+        .collection('Save')
+        .doc(movie.id.toString())
+        .set({
+      'movieId': movie.id,
+      'title': movie.title,
+      'poster': movie.mediumCoverImage,
+      'rating': movie.rating,
+    });
+  }
+
+  static Future<void> removeMovieFromSave(
+      {required String userId, required Movies movie}) async {
+    await FirebaseFirestore.instance
+        .collection(MyUser.collectionName)
+        .doc(userId)
+        .collection('Save')
+        .doc(movie.id.toString())
+        .delete();
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
-import 'package:movie_app/utils/size_utils.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 import '../../../../bloc/search/search_bloc.dart';
 import '../../../../bloc/search/search_event.dart';
@@ -11,7 +11,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../widgets/movie_card.dart';
 
 class SearchTab extends StatelessWidget {
-  const SearchTab({super.key});
+  SearchTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +26,12 @@ class SearchTab extends StatelessWidget {
               resizeToAvoidBottomInset: false,
               backgroundColor: AppColors.black2,
               body: SizedBox(
-                height: SizeConfig.height(context),
-                width: SizeConfig.width(context),
+                height: SizeConfig.screenHeight(context),
+                width: SizeConfig.screenWidth(context),
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(10),
+                      padding: SizeConfig.all(context, 10),
                       child: TextField(
                         onChanged: (value) {
                           context.read<SearchBloc>().add(
@@ -43,11 +43,7 @@ class SearchTab extends StatelessWidget {
                         ),
                         decoration: InputDecoration(
                           prefixIcon: Padding(
-                            padding: const EdgeInsets.only(
-                              top: 10,
-                              left: 10,
-                              bottom: 10,
-                            ),
+                            padding: SizeConfig.only(context, top: 10, left: 10, bottom: 10),
                             child: Image.asset(
                               AppAssets.searchTab,
                             ),
@@ -58,12 +54,9 @@ class SearchTab extends StatelessWidget {
                           hintStyle: TextStyle(
                             color: AppColors.white,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 15,
-                            horizontal: 10,
-                          ),
+                          contentPadding: SizeConfig.symmetric(context, vertical: 15, horizontal: 10),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: SizeConfig.circular(context, 16),
                           ),
                         ),
                       ),
@@ -73,7 +66,7 @@ class SearchTab extends StatelessWidget {
                       child: BlocBuilder<SearchBloc, SearchState>(
                         builder: (context, state) {
                           if (state is SearchLoading) {
-                            return const Center(
+                            return Center(
                               child: CircularProgressIndicator(),
                             );
                           }
@@ -102,11 +95,11 @@ class SearchTab extends StatelessWidget {
                             }
 
                             return GridView.builder(
-                              padding: const EdgeInsets.all(10),
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              padding: SizeConfig.all(context, 10),
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 15,
+                                    crossAxisSpacing: SizeConfig.w(context, 10),
+                                    mainAxisSpacing: SizeConfig.h(context, 15),
                                 childAspectRatio: 0.65,
                               ),
                               itemCount: state.movies.length,

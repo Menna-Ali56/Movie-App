@@ -3,9 +3,10 @@ import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/ui/screens/home/tabs/movie_details/movie_details_screen.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class MovieCard extends StatelessWidget {
-  const MovieCard({
+  MovieCard({
     super.key,
     required this.movie,
   });
@@ -16,66 +17,69 @@ class MovieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final String posterImage = movie.mediumCoverImage ?? '';
 
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MovieDetailsScreen(movie: movie),
-            ));
-      },
-      child: Stack(
-        alignment: Alignment.topLeft,
-        children: [
-          Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: posterImage.isEmpty
-                ? const Icon(
-                    Icons.broken_image,
-                    color: Colors.white,
-                  )
-                : Image.network(
-                    posterImage,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const Icon(
+    return Material(
+      color: AppColors.transparentColor,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MovieDetailsScreen(movie: movie),
+              ));
+        },
+        child: Stack(
+          alignment: Alignment.topLeft,
+          children: [
+            Container(
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                borderRadius: SizeConfig.circular(context, 20),
+              ),
+              child: posterImage.isEmpty
+                  ? Icon(
                       Icons.broken_image,
                       color: Colors.white,
+                    )
+                  : Image.network(
+                      posterImage,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        Icons.broken_image,
+                        color: Colors.white,
+                      ),
+                    ),
+            ),
+            Container(
+              margin: SizeConfig.all(context, 10),
+              height: SizeConfig.h(context, 28),
+              width: SizeConfig.w(context, 58),
+              decoration: BoxDecoration(
+                color: AppColors.darkGray.withValues(alpha: 0.75),
+                borderRadius: SizeConfig.circular(context, 8),
+              ),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: SizeConfig.only(context, left: 4),
+                    child: Text(
+                      movie.rating?.toString() ?? '0.0',
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: SizeConfig.w(context, 16),
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
-          ),
-          Container(
-            margin: const EdgeInsets.all(10),
-            height: 28,
-            width: 58,
-            decoration: BoxDecoration(
-              color: AppColors.darkGray.withValues(alpha: 0.75),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: Text(
-                    movie.rating?.toString() ?? '0.0',
-                    style: const TextStyle(
-                      color: AppColors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  Image.asset(
+                    AppAssets.star,
+                    height: SizeConfig.h(context, 15),
+                    width: SizeConfig.w(context, 15),
                   ),
-                ),
-                Image.asset(
-                  AppAssets.star,
-                  height: 15,
-                  width: 15,
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

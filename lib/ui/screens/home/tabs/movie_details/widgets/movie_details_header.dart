@@ -3,25 +3,56 @@ import 'package:movie_app/models/movie_details_model.dart';
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_styles.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class MovieDetailsHeader extends StatelessWidget {
+class MovieDetailsHeader extends StatefulWidget {
   final Movie movie;
   final VoidCallback onBackPressed;
-
+  final VoidCallback onIsSavePressed;
+  final bool isSave;
+  final bool showTrailer;
+  final VoidCallback onTrailerPressed;
   const MovieDetailsHeader({
     super.key,
     required this.movie,
     required this.onBackPressed,
+    required this.onIsSavePressed,
+    required this.isSave,
+    required this.showTrailer,
+    required this.onTrailerPressed,
   });
+
+  @override
+  State<MovieDetailsHeader> createState() => _MovieDetailsHeaderState();
+}
+
+class _MovieDetailsHeaderState extends State<MovieDetailsHeader> {
+  late YoutubePlayerController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = YoutubePlayerController();
+    controller.loadVideoById(videoId: widget.movie.ytTrailerCode!);
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 560,
+      height: SizeConfig.h(context, 560),
       width: double.infinity,
       child: Stack(
         children: [
-          Image.network(movie.largeCoverImage ?? ""),
+          widget.showTrailer
+              ? Padding(
+                  padding: SizeConfig.only(context, top: 50),
+                  child: SizedBox(
+                      width: double.infinity,
+                      height: SizeConfig.h(context, 560),
+                      child: YoutubePlayer(controller: controller)),
+                )
+              : Image.network(widget.movie.largeCoverImage ?? ""),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -34,42 +65,52 @@ class MovieDetailsHeader extends StatelessWidget {
               ),
             ),
           ),
-          Center(child: Image.asset(AppAssets.play)),
+          if (!widget.showTrailer)
+            InkWell(
+                onTap: widget.onTrailerPressed,
+                child: Center(child: Image.asset(AppAssets.play))),
           Padding(
-            padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
+            padding: SizeConfig.only(context, left: 20, top: 10, right: 20),
             child: Row(
               children: [
                 InkWell(
-                  onTap: onBackPressed,
-                  child: const Icon(
+                  onTap: widget.onBackPressed,
+                  child: Icon(
                     Icons.arrow_back_ios,
                     color: AppColors.white,
                   ),
                 ),
-                const Spacer(),
-                Image.asset(AppAssets.save),
+                Spacer(),
+                InkWell(
+                    onTap: widget.onIsSavePressed,
+                    child: ColorFiltered(
+                        colorFilter: ColorFilter.mode(
+                            widget.isSave ? AppColors.yellow : AppColors.white,
+                            BlendMode.srcIn),
+                        child: Image.asset(AppAssets.save))),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Center(
-                  child: Text(
-                    movie.titleEnglish ?? "",
-                    style: AppStyles.medium36White,
+          if (!widget.showTrailer)
+            Padding(
+              padding: SizeConfig.all(context, 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      widget.movie.titleEnglish ?? "",
+                      style: AppStyles.medium36White,
+                    ),
                   ),
-                ),
-                Text(
-                  (movie.year ?? "").toString(),
-                  style: AppStyles.regular20Gray,
-                ),
-              ],
+                  Text(
+                    (widget.movie.year ?? "").toString(),
+                    style: AppStyles.regular20Gray,
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_styles.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class MovieGenreChips extends StatelessWidget {
   final List<String> genres;
@@ -13,17 +14,14 @@ class MovieGenreChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: SizeConfig.w(context, 8),
+      runSpacing: SizeConfig.h(context, 8),
       children: genres.map((genre) {
         return Container(
-          padding: const EdgeInsets.symmetric(
-            vertical: 6,
-            horizontal: 12,
-          ),
+          padding: SizeConfig.symmetric(context, vertical: 6, horizontal: 12),
           decoration: BoxDecoration(
             color: AppColors.darkGray.withValues(alpha: .75),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: SizeConfig.circular(context, 12),
           ),
           child: Text(
             genre,
