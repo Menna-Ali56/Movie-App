@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:movie_app/bloc/user/user_bloc.dart';
+import 'package:movie_app/bloc/user/user_state.dart';
+import 'package:movie_app/bloc/user/user_event.dart';
+
+import 'package:movie_app/l10n/app_localizations.dart';
+import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/ui/screens/home/size_config.dart';
 import 'package:movie_app/ui/widgets/custom_elevated_button.dart';
+import 'package:movie_app/ui/screens/home/widgets/movie_card.dart';
+
 import 'package:movie_app/utils/app_assets.dart';
 import 'package:movie_app/utils/app_colors.dart';
 import 'package:movie_app/utils/app_routes.dart';
 import 'package:movie_app/utils/app_styles.dart';
-import 'package:provider/provider.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../../provider/user_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/utils/firebase_utils.dart';
-import '../widgets/movie_card.dart';
-import 'package:movie_app/ui/screens/home/size_config.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
@@ -22,15 +27,18 @@ class ProfileTab extends StatefulWidget {
 
 class _ProfileTabState extends State<ProfileTab> {
   Future<List<Movies>>? historyFuture;
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    var userProvider=Provider.of<UserProvider>(context);
+
+    final userState = context.watch<UserBloc>().state;
+
     final user = FirebaseAuth.instance.currentUser;
 
-    historyFuture ??= user == null
-        ? null
-        : FireBaseUtils.getHistory(user.uid);
+    historyFuture ??=
+    user == null ? null : FireBaseUtils.getHistory(user.uid);
+
     return SafeArea(
       child: DefaultTabController(
         length: 2,
@@ -41,8 +49,12 @@ class _ProfileTabState extends State<ProfileTab> {
               return [
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding:
-                        SizeConfig.only(context, top: 24, left: 24, right: 10),
+                    padding: SizeConfig.only(
+                      context,
+                      top: 24,
+                      left: 24,
+                      right: 10,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -59,14 +71,20 @@ class _ProfileTabState extends State<ProfileTab> {
                                   height: SizeConfig.h(context, 15),
                                 ),
                                 Text(
-                                  userProvider.currentUser!.name,
+                                  userState is UserSuccess
+                                      ? userState.user.name
+                                      : '',
                                   style: AppStyles.roboto20White500,
-                                )
+                                ),
                               ],
                             ),
+
                             Padding(
-                              padding:
-                                SizeConfig.only(context, left: 20, right: 25),
+                              padding: SizeConfig.only(
+                                context,
+                                left: 20,
+                                right: 25,
+                              ),
                               child: Column(
                                 children: [
                                   Text(
@@ -83,12 +101,14 @@ class _ProfileTabState extends State<ProfileTab> {
                                 ],
                               ),
                             ),
+
                             Column(
                               children: [
                                 FutureBuilder<List<Movies>>(
                                   future: historyFuture,
                                   builder: (context, snapshot) {
-                                    final historyCount = snapshot.data?.length ?? 0;
+                                    final historyCount =
+                                        snapshot.data?.length ?? 0;
 
                                     return Text(
                                       historyCount.toString(),
@@ -104,11 +124,17 @@ class _ProfileTabState extends State<ProfileTab> {
                                   style: AppStyles.regular20White,
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
+
                         Padding(
-                          padding: SizeConfig.only(context, top: 24, right: 10, bottom: 24),
+                          padding: SizeConfig.only(
+                            context,
+                            top: 24,
+                            right: 10,
+                            bottom: 24,
+                          ),
                           child: Row(
                             children: [
                               Expanded(
@@ -116,7 +142,8 @@ class _ProfileTabState extends State<ProfileTab> {
                                 child: CustomElevatedButton(
                                   backgroundColor: AppColors.yellow,
                                   radius: SizeConfig.w(context, 15),
-                                  verticalPadding: SizeConfig.h(context, 15),
+                                  verticalPadding:
+                                  SizeConfig.h(context, 15),
                                   onPressed: () {
                                     Navigator.pushNamed(
                                       context,
@@ -129,40 +156,50 @@ class _ProfileTabState extends State<ProfileTab> {
                                   ),
                                 ),
                               ),
+
                               SizedBox(
-                              width: SizeConfig.w(context, 10),
+                                width: SizeConfig.w(context, 10),
                               ),
+
                               Expanded(
                                 flex: 1,
                                 child: CustomElevatedButton(
                                   backgroundColor: AppColors.red,
                                   radius: SizeConfig.w(context, 15),
-                                  verticalPadding: SizeConfig.h(context, 15),
-                                  onPressed:
-                                     () async {
-                                      await FirebaseAuth.instance.signOut();
+                                  verticalPadding:
+                                  SizeConfig.h(context, 15),
+                                  onPressed: () async {
+                                    await FirebaseAuth.instance.signOut();
 
-                                      if (!context.mounted) return;
+                                    if (!context.mounted) return;
 
-                                      Navigator.pushNamedAndRemoveUntil(
-                                        context,
-                                        AppRoutes.login_screen,
-                                            (route) => false,
-                                      );
-                                    },
+                                    context
+                                        .read<UserBloc>()
+                                        .add(ClearUserEvent());
 
-
+                                    Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      AppRoutes.login_screen,
+                                          (route) => false,
+                                    );
+                                  },
                                   child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      localizations.exit,
-                                      style: AppStyles.regular20White,
-                                    ),
-                                    SizedBox(width: SizeConfig.w(context, 8)),
-                                   Icon(Icons.exit_to_app_outlined,color: AppColors.white,)
-                                  ],
-                                ),
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        localizations.exit,
+                                        style: AppStyles.regular20White,
+                                      ),
+                                      SizedBox(
+                                        width: SizeConfig.w(context, 8),
+                                      ),
+                                      const Icon(
+                                        Icons.exit_to_app_outlined,
+                                        color: AppColors.white,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -172,109 +209,125 @@ class _ProfileTabState extends State<ProfileTab> {
                     ),
                   ),
                 ),
+
                 SliverPersistentHeader(
-                    pinned: true,
-                    delegate: _SliverTabBarDelegate(TabBar(
-                        indicatorColor: AppColors.yellow,
-                        dividerColor: AppColors.transparentColor,
-                        unselectedLabelColor: AppColors.transparentColor,
-                        tabs: [
-                          Tab(
-                            child: Column(
-                              children: [
-                                const Icon(
-                                  Icons.list,
-                                  color: AppColors.yellow,
-                                ),
-                                Text(
-                                  localizations.watch_list,
-                                  style: AppStyles.regular14White,
-                                ),
-                              ],
-                            ),
+                  pinned: true,
+                  delegate: _SliverTabBarDelegate(
+                    TabBar(
+                      indicatorColor: AppColors.yellow,
+                      dividerColor: AppColors.transparentColor,
+                      unselectedLabelColor:
+                      AppColors.transparentColor,
+                      tabs: [
+                        Tab(
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.list,
+                                color: AppColors.yellow,
+                              ),
+                              Text(
+                                localizations.watch_list,
+                                style: AppStyles.regular14White,
+                              ),
+                            ],
                           ),
-                          Tab(
-                            child: Column(
-                              children: [
-                                const Icon(
-                                  Icons.folder,
-                                  color: AppColors.yellow,
-                                ),
-                                Text(
-                                  localizations.history,
-                                  style: AppStyles.regular14White,
-                                ),
-                              ],
-                            ),
-                          )
-                        ]))),
+                        ),
+                        Tab(
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.folder,
+                                color: AppColors.yellow,
+                              ),
+                              Text(
+                                localizations.history,
+                                style: AppStyles.regular14White,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ];
             },
-            body: TabBarView(children: [
-              Container(
-                color: AppColors.black2,
-                child: Center(
-                  child: Image.asset(AppAssets.emtySearch),
-                ),
-              ),
 
-              Container(
-                color: AppColors.black2,
-                child: user == null
-                    ? Center(
-                  child: Text(
-                    "Please login first",
-                    style: AppStyles.regular16White,
+            body: TabBarView(
+              children: [
+                Container(
+                  color: AppColors.black2,
+                  child: Center(
+                    child: Image.asset(
+                      AppAssets.emtySearch,
+                    ),
                   ),
-                )
-                    : FutureBuilder<List<Movies>>(
-                  future: FireBaseUtils.getHistory(user.uid),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.yellow,
-                        ),
-                      );
-                    }
-
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          "Something went wrong",
-                          style: AppStyles.regular16White,
-                        ),
-                      );
-                    }
-
-                    final history = snapshot.data ?? [];
-
-                    if (history.isEmpty) {
-                      return Center(
-                        child: Image.asset(AppAssets.emtySearch),
-                      );
-                    }
-
-                    return GridView.builder(
-                      padding: SizeConfig.all(context, 10),
-                      gridDelegate:
-                      SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.7,
-                        crossAxisSpacing: SizeConfig.w(context, 12),
-                        mainAxisSpacing: SizeConfig.h(context, 12),
-                      ),
-                      itemCount: history.length,
-                      itemBuilder: (context, index) {
-                        return MovieCard(
-                          movie: history[index],
-                        );
-                      },
-                    );
-                  },
                 ),
-              ),
-            ]),
+
+                Container(
+                  color: AppColors.black2,
+                  child: user == null
+                      ? Center(
+                    child: Text(
+                      "Please login first",
+                      style: AppStyles.regular16White,
+                    ),
+                  )
+                      : FutureBuilder<List<Movies>>(
+                    future: FireBaseUtils.getHistory(user.uid),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.yellow,
+                          ),
+                        );
+                      }
+
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            "Something went wrong",
+                            style: AppStyles.regular16White,
+                          ),
+                        );
+                      }
+
+                      final history = snapshot.data ?? [];
+
+                      if (history.isEmpty) {
+                        return Center(
+                          child: Image.asset(
+                            AppAssets.emtySearch,
+                          ),
+                        );
+                      }
+
+                      return GridView.builder(
+                        padding: SizeConfig.all(context, 10),
+                        gridDelegate:
+                        SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.7,
+                          crossAxisSpacing:
+                          SizeConfig.w(context, 12),
+                          mainAxisSpacing:
+                          SizeConfig.h(context, 12),
+                        ),
+                        itemCount: history.length,
+                        itemBuilder: (context, index) {
+                          return MovieCard(
+                            movie: history[index],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -282,13 +335,18 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 }
 
-class _SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
+class _SliverTabBarDelegate
+    extends SliverPersistentHeaderDelegate {
   final TabBar tabBar;
+
   _SliverTabBarDelegate(this.tabBar);
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+      BuildContext context,
+      double shrinkOffset,
+      bool overlapsContent,
+      ) {
     return Container(
       child: tabBar,
     );
@@ -296,10 +354,14 @@ class _SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   double get maxExtent => tabBar.preferredSize.height;
+
   @override
   double get minExtent => tabBar.preferredSize.height;
+
   @override
-  bool shouldRebuild(covariant _SliverTabBarDelegate oldDelegate) {
+  bool shouldRebuild(
+      covariant _SliverTabBarDelegate oldDelegate,
+      ) {
     return false;
   }
 }
