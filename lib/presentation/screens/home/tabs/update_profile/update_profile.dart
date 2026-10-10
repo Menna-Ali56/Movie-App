@@ -10,6 +10,7 @@ import 'package:movie_app/data/models/my_user.dart';
 import 'package:movie_app/presentation/screens/home/size_config.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+
 class UpdateProfile extends StatefulWidget {
   const UpdateProfile({super.key});
 
@@ -18,14 +19,10 @@ class UpdateProfile extends StatefulWidget {
 }
 
 class _UpdateProfileState extends State<UpdateProfile> {
-  // Controllers
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
 
-  // Default avatar
   String selectedAvatar = AppAssets.avatar_1;
-
-
   bool isLoading = false;
 
   @override
@@ -48,6 +45,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
       if (doc.exists) {
         final data = doc.data();
+
+        if (!mounted) return;
 
         setState(() {
           nameController.text = data?['name'] ?? '';
@@ -90,9 +89,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Profile updated successfully',
-          ),
+          content: Text('Profile updated successfully'),
         ),
       );
     } catch (e) {
@@ -100,9 +97,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Error updating profile: $e',
-          ),
+          content: Text('Error updating profile: $e'),
         ),
       );
     } finally {
@@ -121,7 +116,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
       context: context,
       builder: (context) {
         return Padding(
-          padding: SizeConfig.symmetric(context, vertical: 15, horizontal: 14),
+          padding: SizeConfig.symmetric(
+            context,
+            vertical: 15,
+            horizontal: 14,
+          ),
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.darkGray,
@@ -131,8 +130,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: AppAssets.listUpdatProfile.length,
-              gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: SizeConfig.w(context, 10),
                 mainAxisSpacing: SizeConfig.h(context, 10),
@@ -169,18 +167,18 @@ class _UpdateProfileState extends State<UpdateProfile> {
       },
     );
 
-    if (avatar != null) {
+    if (avatar != null && mounted) {
       setState(() {
         selectedAvatar = avatar;
       });
     }
   }
 
-  // delete account
+  // Delete account
   Future<void> deleteAccount() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
 
+    if (user == null) return;
 
     final confirm = await showDialog<bool>(
       context: context,
@@ -202,23 +200,22 @@ class _UpdateProfileState extends State<UpdateProfile> {
       ),
     );
 
-    if (confirm != true) return;
+    if (confirm != true || !mounted) return;
 
-    setState(() => isLoading = true);
+    setState(() {
+      isLoading = true;
+    });
 
     try {
-      // 1) امسح بيانات المستخدم من Firestore
       await FirebaseFirestore.instance
           .collection(MyUser.collectionName)
           .doc(user.uid)
           .delete();
 
-      // 2) امسح الحساب من Firebase Auth
       await user.delete();
 
       if (!mounted) return;
 
-      // 3) ارجع لشاشة اللوجين وامسح كل الصفحات السابقة
       Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.login_screen,
             (route) => false,
@@ -236,16 +233,25 @@ class _UpdateProfileState extends State<UpdateProfile> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.message}')),
+          SnackBar(
+            content: Text('Error: ${e.message}'),
+          ),
         );
       }
     } catch (e) {
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting account: $e')),
+        SnackBar(
+          content: Text('Error deleting account: $e'),
+        ),
       );
     } finally {
-      if (mounted) setState(() => isLoading = false);
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -259,6 +265,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.transparentColor,
@@ -268,7 +275,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
         leading: InkWell(
           splashColor: AppColors.transparentColor,
           highlightColor: AppColors.transparentColor,
-          autofocus: true,
           onTap: () {
             Navigator.pop(
               context,
@@ -286,188 +292,217 @@ class _UpdateProfileState extends State<UpdateProfile> {
             style: AppStyles.regular14Yellow,
           ),
         ),
-        actions:  [
+        actions: [
           SizedBox(
             width: SizeConfig.w(context, 39),
           ),
         ],
       ),
-      body: Padding(
-        padding:  SizeConfig.only(context, top: 39),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Avatar
-            InkWell(
-              splashColor: AppColors.transparentColor,
-              highlightColor: AppColors.transparentColor,
-              onTap: chooseAvatar,
-              child: Center(
-                child: SizedBox(
-                  height: SizeConfig.h(context, 168.8),
-                  width: SizeConfig.w(context, 156),
-                  child: Image.asset(
-                    selectedAvatar,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ),
 
-            // Name
-            Padding(
-              padding:  SizeConfig.only(context, top: 33.76, right: 7.8, left: 7.8),
-              child: TextField(
-                controller: nameController,
-                cursorColor: AppColors.yellow,
-                style: const TextStyle(
-                  color: AppColors.yellow,
-                ),
-                decoration: InputDecoration(
-                  fillColor: AppColors.darkGray,
-                  filled: true,
-                  prefixIcon: Image.asset(AppAssets.user),
-                  hintText: localizations.name,
-                  hintStyle: AppStyles.roboto20White500,
-                  contentPadding:  SizeConfig.symmetric(context, vertical: 16.88, horizontal: 15.6),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: SizeConfig.circular(context, 15),
-                    borderSide: BorderSide(
-                      color: AppColors.darkGray,
-                      width: SizeConfig.w(context, 1),
+      // Scrollable screen to avoid keyboard overflow
+      body: SafeArea(
+        child: SingleChildScrollView(
+          keyboardDismissBehavior:
+          ScrollViewKeyboardDismissBehavior.onDrag,
+          child: Padding(
+            padding: SizeConfig.only(context, top: 39),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Avatar
+                InkWell(
+                  splashColor: AppColors.transparentColor,
+                  highlightColor: AppColors.transparentColor,
+                  onTap: chooseAvatar,
+                  child: Center(
+                    child: SizedBox(
+                      height: SizeConfig.h(context, 168.8),
+                      width: SizeConfig.w(context, 156),
+                      child: Image.asset(
+                        selectedAvatar,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: SizeConfig.circular(context, 15),
-                    borderSide: BorderSide(
+                ),
+
+                // Name
+                Padding(
+                  padding: SizeConfig.only(
+                    context,
+                    top: 33.76,
+                    right: 7.8,
+                    left: 7.8,
+                  ),
+                  child: TextField(
+                    controller: nameController,
+                    cursorColor: AppColors.yellow,
+                    style: const TextStyle(
                       color: AppColors.yellow,
-                      width: SizeConfig.w(context, 1),
                     ),
-                  ),
-                ),
-              ),
-            ),
-
-            // Phone
-            Padding(
-              padding:  SizeConfig.only(context, top: 33.76, right: 7.8, left: 7.8),
-              child: TextField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                cursorColor: AppColors.yellow,
-                style: const TextStyle(
-                  color: AppColors.yellow,
-                ),
-                decoration: InputDecoration(
-                  fillColor: AppColors.darkGray,
-                  filled: true,
-                  prefixIcon: Image.asset(
-                    AppAssets.phone,
-                  ),
-                  hintText: '01200000000',
-                  hintStyle: const TextStyle(
-                    color: AppColors.white,
-                  ),
-                  contentPadding:  SizeConfig.symmetric(context, vertical: 16.88, horizontal: 7.8),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: SizeConfig.circular(context, 15),
-                    borderSide: BorderSide(
-                      color: AppColors.darkGray,
-                      width: SizeConfig.w(context, 1),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: SizeConfig.circular(context, 15),
-                    borderSide: BorderSide(
-                      color: AppColors.yellow,
-                      width: SizeConfig.w(context, 1),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            // Reset Password
-            Expanded(
-              child: Column(
-                children: [
-                  Padding(
-                    padding:  SizeConfig.only(context, top: 25.32, right: 7.8, left: 7.8, bottom: 33.76),
-                    child: Text(
-                      localizations.reset_password,
-                      style: AppStyles.regular20White,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Delete Account
-            Container(
-              margin:  SizeConfig.symmetric(context, horizontal: 7.8),
-              child: Center(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: CustomElevatedButton(
-                        backgroundColor: AppColors.red,
-                        radius: SizeConfig.w(context, 15),
-                        verticalPadding: SizeConfig.h(context, 15),
-                        onPressed:  isLoading ? null : deleteAccount,
-
-                        child: Text(
-                         localizations.delete_account,
-                          style: AppStyles.regular20DarkGray,
+                    decoration: InputDecoration(
+                      fillColor: AppColors.darkGray,
+                      filled: true,
+                      prefixIcon: Image.asset(AppAssets.user),
+                      hintText: localizations.name,
+                      hintStyle: AppStyles.roboto20White500,
+                      contentPadding: SizeConfig.symmetric(
+                        context,
+                        vertical: 16.88,
+                        horizontal: 15.6,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: SizeConfig.circular(context, 15),
+                        borderSide: BorderSide(
+                          color: AppColors.darkGray,
+                          width: SizeConfig.w(context, 1),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: SizeConfig.circular(context, 15),
+                        borderSide: BorderSide(
+                          color: AppColors.yellow,
+                          width: SizeConfig.w(context, 1),
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
 
-            SizedBox(
-              height: SizeConfig.h(context, 15),
-            ),
+                // Phone
+                Padding(
+                  padding: SizeConfig.only(
+                    context,
+                    top: 33.76,
+                    right: 7.8,
+                    left: 7.8,
+                  ),
+                  child: TextField(
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    cursorColor: AppColors.yellow,
+                    style: const TextStyle(
+                      color: AppColors.yellow,
+                    ),
+                    decoration: InputDecoration(
+                      fillColor: AppColors.darkGray,
+                      filled: true,
+                      prefixIcon: Image.asset(AppAssets.phone),
+                      hintText: '01200000000',
+                      hintStyle: const TextStyle(
+                        color: AppColors.white,
+                      ),
+                      contentPadding: SizeConfig.symmetric(
+                        context,
+                        vertical: 16.88,
+                        horizontal: 7.8,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: SizeConfig.circular(context, 15),
+                        borderSide: BorderSide(
+                          color: AppColors.darkGray,
+                          width: SizeConfig.w(context, 1),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: SizeConfig.circular(context, 15),
+                        borderSide: BorderSide(
+                          color: AppColors.yellow,
+                          width: SizeConfig.w(context, 1),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
 
-            // Edit Profile
-            Container(
-              margin: SizeConfig.symmetric(context, horizontal: 10),
-              child: Center(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: CustomElevatedButton(
-                        backgroundColor: AppColors.yellow,
-                        radius: SizeConfig.w(context, 15),
-                        verticalPadding: SizeConfig.h(context, 15),
-                        horizontalPadding: SizeConfig.w(context, 5),
-                        onPressed: isLoading ? null
-                            : updateProfile,
-                        child: isLoading
-                            ?  SizedBox(
-                          height: SizeConfig.h(context, 33.76),
-                          width: SizeConfig.w(context, 7.8),
-                          child: CircularProgressIndicator(
-                            color: AppColors.darkGray,
-                            strokeWidth: 2,
+                // Reset Password
+                Padding(
+                  padding: SizeConfig.only(
+                    context,
+                    top: 25.32,
+                    right: 7.8,
+                    left: 7.8,
+                    bottom: 33.76,
+                  ),
+                  child: Text(
+                    localizations.reset_password,
+                    style: AppStyles.regular20White,
+                  ),
+                ),
+
+                // Delete Account
+                Container(
+                  margin: SizeConfig.symmetric(
+                    context,
+                    horizontal: 7.8,
+                  ),
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: CustomElevatedButton(
+                            backgroundColor: AppColors.red,
+                            radius: SizeConfig.w(context, 15),
+                            verticalPadding: SizeConfig.h(context, 15),
+                            onPressed: isLoading ? null : deleteAccount,
+                            child: Text(
+                              localizations.delete_account,
+                              style: AppStyles.regular20DarkGray,
+                            ),
                           ),
-                        )
-                            : Text(
-                          localizations.edit_profile,
-                          style: AppStyles.regular20DarkGray,
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
 
-             SizedBox(
-              height: SizeConfig.h(context, 33.76),
+                SizedBox(
+                  height: SizeConfig.h(context, 15),
+                ),
+
+                // Edit Profile
+                Container(
+                  margin: SizeConfig.symmetric(
+                    context,
+                    horizontal: 10,
+                  ),
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: CustomElevatedButton(
+                            backgroundColor: AppColors.yellow,
+                            radius: SizeConfig.w(context, 15),
+                            verticalPadding: SizeConfig.h(context, 15),
+                            horizontalPadding: SizeConfig.w(context, 5),
+                            onPressed: isLoading ? null : updateProfile,
+                            child: isLoading
+                                ? SizedBox(
+                              height: SizeConfig.h(context, 33.76),
+                              width: SizeConfig.w(context, 33.76),
+                              child: const CircularProgressIndicator(
+                                color: AppColors.darkGray,
+                                strokeWidth: 2,
+                              ),
+                            )
+                                : Text(
+                              localizations.edit_profile,
+                              style: AppStyles.regular20DarkGray,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                SizedBox(
+                  height: SizeConfig.h(context, 33.76),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

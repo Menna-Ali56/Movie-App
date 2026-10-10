@@ -5,7 +5,6 @@ import 'package:movie_app/presentation/bloc/language/language_bloc.dart';
 import 'package:movie_app/presentation/bloc/language/language_state.dart';
 import 'package:movie_app/presentation/bloc/profile/proflie_bloc.dart';
 import 'package:movie_app/presentation/bloc/user/user_bloc.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:movie_app/presentation/screens/Auth/login/login_screen.dart';
 import 'package:movie_app/presentation/screens/Auth/register/register_screen.dart';
